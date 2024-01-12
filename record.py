@@ -34,7 +34,4 @@ for i in range(1,11): #前闭后开
 print(sum)
 
 pass
-print(123)
-print(4)
-print(520,sep='*')
-print('wozhendeaizyt')
+
