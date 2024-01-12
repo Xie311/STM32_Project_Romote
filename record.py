@@ -26,12 +26,23 @@ match score:
         print('excellent')
 
 for i in 'winter':
-    print(i,sep='')
+    print(i,end='')
 
-sum=0
+sum1=0
 for i in range(1,11): #前闭后开
-    sum+=i
-print(sum)
+    sum1+=i
+print(sum1)
 
 pass
+
+s='Hello'
+s1=s[::-1]
+print(s1*3)
+
+print('e' in s)
+print('e' not in s)
+print(len(s),end='')
+print(s.count('l'),end='')
+print(s.index('l'))
+print(min(s))
 
