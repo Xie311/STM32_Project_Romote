@@ -1,1 +1,1 @@
-信warning则有，不信则无^_^
+Trying hard to live and learn something powerful
