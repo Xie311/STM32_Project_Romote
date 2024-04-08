@@ -1,0 +1,12 @@
+{
+    "files.associations": {
+        "chassis_servo.h": "c",
+        "chassis_remotectl.h": "c",
+        "chassis_start.h": "c",
+        "chassis_userconfig.h": "c",
+        "chassis_statemachine.h": "c",
+        "chassis_variable.h": "c",
+        "chassis_callback.h": "c",
+        "chassis_commen.h": "c"
+    }
+}

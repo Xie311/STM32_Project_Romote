@@ -1,0 +1,27 @@
+--cpu Cortex-M3
+"xln_hw2\startup_stm32f103xb.o"
+"xln_hw2\main.o"
+"xln_hw2\gpio.o"
+"xln_hw2\tim.o"
+"xln_hw2\usart.o"
+"xln_hw2\stm32f1xx_it.o"
+"xln_hw2\stm32f1xx_hal_msp.o"
+"xln_hw2\stm32f1xx_hal_gpio_ex.o"
+"xln_hw2\stm32f1xx_hal_tim.o"
+"xln_hw2\stm32f1xx_hal_tim_ex.o"
+"xln_hw2\stm32f1xx_hal.o"
+"xln_hw2\stm32f1xx_hal_rcc.o"
+"xln_hw2\stm32f1xx_hal_rcc_ex.o"
+"xln_hw2\stm32f1xx_hal_gpio.o"
+"xln_hw2\stm32f1xx_hal_dma.o"
+"xln_hw2\stm32f1xx_hal_cortex.o"
+"xln_hw2\stm32f1xx_hal_pwr.o"
+"xln_hw2\stm32f1xx_hal_flash.o"
+"xln_hw2\stm32f1xx_hal_flash_ex.o"
+"xln_hw2\stm32f1xx_hal_exti.o"
+"xln_hw2\stm32f1xx_hal_uart.o"
+"xln_hw2\system_stm32f1xx.o"
+--strict --scatter "xln_hw2\xln_hw2.sct"
+--summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
+--info sizes --info totals --info unused --info veneers
+--list "xln_hw2.map" -o xln_hw2\xln_hw2.axf
