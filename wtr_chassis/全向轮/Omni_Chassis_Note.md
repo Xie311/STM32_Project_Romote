@@ -28,6 +28,14 @@ void StartDefaultTask(void const *argument)
 }
 ```
 
+**对于全自动无大疆遥控小车**
+
+`Callback`、`RemoteCtl`、`Decode`  都不再需要
+
+数据不再来自大疆遥控，而是来自上位机
+
+有关大疆遥控的变量都在`Chassis_StateMachine.c`中
+
 ## 一、文件介绍
 
 ```c
@@ -251,7 +259,7 @@ void DeadBandOneDimensional(double x, double *new_x, double threshould)
 }
 ```
 
-### Servo
+### 4.Servo
 
 #### (1）底盘电机初始化
 
@@ -394,3 +402,89 @@ void Chassis_Servo_Task(void const *argument)
     }
 }
 ```
+
+### 5.OPS
+
+**采用PID串级控制**
+
+`[到底什么是串级PID? - 知乎 (zhihu.com)](https://zhuanlan.zhihu.com/p/352407769)`
+
+1.大疆遥控/上位机传来的**（速度？位置？）期望值**与码盘的**（位置）反馈值**进行PID，计算出**PID反馈值**
+
+2.**PID反馈值**与**CAN总线传回的电机速度值**再进行PID，将计算值通过CAN总线发送
+
+---
+
+**！！!  使用OPS解码函数需在 `UserCode\Lib\OPS\wtr_ops.h` 中用户定义段修改串口选项**
+
+---
+chatGPT给出的串级PID demo：
+
+```c
+#include <stdio.h>
+
+// 定义PID参数结构体
+typedef struct {
+    double Kp_outer;
+    double Ki_outer;
+    double Kd_outer;
+    double Kp_inner;
+    double Ki_inner;
+    double Kd_inner;
+    double prev_error_inner;
+    double integral_error_inner;
+    double prev_error_outer;
+    double integral_error_outer;
+    double control_output; // 控制量
+} PIDParameters;
+
+// 初始化PID参数
+void initialize_pid_parameters(PIDParameters *pid_params, double Kp_outer, double Ki_outer, double Kd_outer, double Kp_inner, double Ki_inner, double Kd_inner) {
+    pid_params->Kp_outer = Kp_outer;
+    pid_params->Ki_outer = Ki_outer;
+    pid_params->Kd_outer = Kd_outer;
+    pid_params->Kp_inner = Kp_inner;
+    pid_params->Ki_inner = Ki_inner;
+    pid_params->Kd_inner = Kd_inner;
+    pid_params->prev_error_inner = 0.0;
+    pid_params->integral_error_inner = 0.0;
+    pid_params->prev_error_outer = 0.0;
+    pid_params->integral_error_outer = 0.0;
+    pid_params->control_output = 0.0; // 初始化控制量
+}
+
+// 计算串级PID控制器的输出
+void cascade_pid_control(PIDParameters *pid_params, double target_position, double current_position, double current_velocity) {
+    // 外部PID控制器输出（目标速度）
+    double error_outer = target_position - current_position;
+    pid_params->integral_error_outer += error_outer;
+    double derivative_error_outer = error_outer - pid_params->prev_error_outer;
+    pid_params->prev_error_outer = error_outer;
+    double target_velocity = pid_params->Kp_outer * error_outer + pid_params->Ki_outer * pid_params->integral_error_outer + pid_params->Kd_outer * derivative_error_outer;
+
+    // 内部PID控制器输出（控制量）
+    double error_inner = target_velocity - current_velocity;
+    pid_params->integral_error_inner += error_inner;
+    double derivative_error_inner = error_inner - pid_params->prev_error_inner;
+    pid_params->prev_error_inner = error_inner;
+    pid_params->control_output = pid_params->Kp_inner * error_inner + pid_params->Ki_inner * pid_params->integral_error_inner + pid_params->Kd_inner * derivative_error_inner;
+}
+
+int main() {
+    // 初始化PID参数
+    PIDParameters pid_params;
+    initialize_pid_parameters(&pid_params, 1.0, 0.1, 0.01, 0.5, 0.05, 0.005);
+
+    // 使用示例
+    double target_position = 100.0; // 目标位置
+    double current_position = 80.0;  // 当前位置
+    double current_velocity = 0.0;   // 当前速度
+
+    // 调用串级PID控制函数，更新控制量
+    cascade_pid_control(&pid_params, target_position, current_position, current_velocity);
+    printf("Control Output: %lf\n", pid_params.control_output);
+
+    return 0;
+}
+```
+

@@ -20,6 +20,8 @@ void StartDefaultTask(void const *argument)
     Chassis_RemoteCtl_Init();    // 遥控初始化
     Chassis_StateMachine_Init(); // 状态机初始化
     Chassis_Servo_Init();        // 底盘电机初始化
+    osDelay(10000);             // 等待外设初始化结束
+    Chassis_Perception_Init(); // 码盘初始化
     //================启动线程==================
     Chassis_StateMachine_TaskStart(); // 状态机进程启动
     Chassis_Servo_TaskStart();        // 底盘伺服进程启动

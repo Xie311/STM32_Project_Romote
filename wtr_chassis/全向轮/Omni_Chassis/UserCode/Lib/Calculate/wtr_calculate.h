@@ -14,6 +14,7 @@
 #include "chassis_start.h"
 
 #include "wtr_dji.h"
+#include "wtr_ops.h"
 
 #define r_underpan_3 0.1934
 #define r_underpan_4 0.25

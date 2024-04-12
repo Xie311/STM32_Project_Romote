@@ -18,6 +18,24 @@ typedef struct {
 
 } PID_t;
 
+// 定义串级PID参数结构体
+typedef struct {
+    double Kp_outer;            // 外层PID参数P
+    double Ki_outer;            // 外层PID参数I
+    double Kd_outer;            // 外层PID参数D
+
+    double Kp_inner;            // 内层PID参数P
+    double Ki_inner;            // 内层PID参数I
+    double Kd_inner;            // 内层PID参数D
+
+    double prev_error_inner;    // 内层PID上一次误差
+    double integral_error_inner;// 内层PID积分误差
+    
+    double prev_error_outer;    // 外层PID上一次误差
+    double integral_error_outer;// 外层PID积分误差
+    double control_output;      // 控制量
+} PIDParameters;
+
 typedef enum {
     M3508 = 0,
     M2006

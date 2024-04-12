@@ -36,6 +36,31 @@ void CalculateOmniWheel(double *moter_speed, double vx, double vy, double vw)
     moter_speed[3] = (vx * cos(7*M_PI/4) - vy * sin(7*M_PI/4) - vw * rotate_ratio * wheel_radius) * wheel_rpm_ratio;
 }
 
+/**
+ * @brief: 计算串级PID控制器的输出串级PID
+ * @param pid_params：指向 PIDParameters 结构体的指针，其中包含了PID控制器的所有参数和状态信息
+ * @param target_position：目标位置，即期望达到的位置---来自大疆遥控/上位机
+ * @param current_position：当前位置，即系统当前的位置--码盘反馈
+ * @param current_velocity：当前速度，即系统当前的速度--电机通过CAN回传
+ * @return {*}
+ * @note:直接先位置再速度封装一下呢（？）
+*/
+void cascade_pid_control(PIDParameters *pid_params, double target_position, double current_position, double current_velocity) {
+    // 外部PID控制器输出（目标速度）
+    double error_outer = target_position - current_position;
+    pid_params->integral_error_outer += error_outer;
+    double derivative_error_outer = error_outer - pid_params->prev_error_outer;
+    pid_params->prev_error_outer = error_outer;
+    double target_velocity = pid_params->Kp_outer * error_outer + pid_params->Ki_outer * pid_params->integral_error_outer + pid_params->Kd_outer * derivative_error_outer;
+
+    // 内部PID控制器输出（控制量）
+    double error_inner = target_velocity - current_velocity;
+    pid_params->integral_error_inner += error_inner;
+    double derivative_error_inner = error_inner - pid_params->prev_error_inner;
+    pid_params->prev_error_inner = error_inner;
+    pid_params->control_output = pid_params->Kp_inner * error_inner + pid_params->Ki_inner * pid_params->integral_error_inner + pid_params->Kd_inner * derivative_error_inner;
+}
+
 
 /**
  * @brief: PID控制-增量式PID

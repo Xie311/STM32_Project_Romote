@@ -45,7 +45,13 @@ void Chassis_Servo_Task(void const *argument)
         DJI_t hDJI_tmp[4];
 
         vPortEnterCritical();
-        // 将电机状态复制到临时数组中
+        // 将电机状态复制到临时数组中  
+
+        /**
+         * Q：这里为什么要复制到临时数组，临时数组计算发送后再复制到原数组，而不是直接计算发送？为了确保在调整电机状态时不会影响到原始数据？
+         *       在互斥锁直接修改WheelComponent.hDJI效果是否一样？
+         * A: 防止互斥锁阻塞其他进程
+         */
         for (int i = 0; i < 4; i++) { memcpy(&(hDJI_tmp[i]), WheelComponent.hDJI[i], sizeof(DJI_t)); }
         vPortExitCritical();
 
@@ -63,7 +69,6 @@ void Chassis_Servo_Task(void const *argument)
         for (int i = 0; i < 4; i++) { memcpy(WheelComponent.hDJI[i], &(hDJI_tmp[i]), sizeof(DJI_t)); }
         vPortExitCritical();
 
-        //控制任务执行频率
         osDelay(10);
     }
 }

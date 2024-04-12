@@ -15,14 +15,16 @@ CHASSIS_MOVING_STATE ChassisState;
 /**
  * @brief: 状态机线程
  * @return {*}
+ * @note   2024/4/12  测试代码：删去Remote_t RemoteCtl_Data_tmp = RemoteCtl_RawData，直接给定Remote_t RemoteCtl_Data_tmp结构体中RemoteCtl_Data_tmp.left，ch0、ch1、ch2的值  
  */
 void Chassis_StateMachine_Task(void const *argument)
 {
     for (;;) {
         vPortEnterCritical();                                   // 进入临界区，防止多个任务同时访问 RemoteCtl_RawData
-        Remote_t RemoteCtl_RawData_tmp = RemoteCtl_RawData;     // 复制遥控器数据到临时变量
+        //Remote_t RemoteCtl_RawData_tmp = RemoteCtl_RawData;   注意由于数据由上位机而非大疆遥控发送，这里将结构体更名了
+        Remote_t RemoteCtl_Data_tmp = RemoteCtl_RawData;        // 复制遥控器/上位机数据到临时变量 
         vPortExitCritical();                                    // 退出临界区
-        switch (RemoteCtl_RawData_tmp.left) {
+        switch (RemoteCtl_Data_tmp.left) {
             case Stop:
                 // 获取底盘控制的互斥锁，防止多任务同时修改底盘控制数据
                 xSemaphoreTakeRecursive(ChassisControl.xMutex_control, portMAX_DELAY);
@@ -36,9 +38,9 @@ void Chassis_StateMachine_Task(void const *argument)
                 // 获取底盘控制的互斥锁，防止多任务同时修改底盘控制数据
                 xSemaphoreTakeRecursive(ChassisControl.xMutex_control, portMAX_DELAY);
                 // 根据遥控器输入设置底盘速度，同时进行死区处理
-                DeadBandOneDimensional((RemoteCtl_RawData_tmp.ch0 - 1024) * 0.001, &(ChassisControl.velocity.x), 0.05);
-                DeadBandOneDimensional((RemoteCtl_RawData_tmp.ch1 - 1024) * 0.001, &(ChassisControl.velocity.y), 0.05);
-                DeadBandOneDimensional((RemoteCtl_RawData_tmp.ch2 - 1024) * 0.001, &(ChassisControl.velocity.w), 0.05);
+                DeadBandOneDimensional((RemoteCtl_Data_tmp.ch0 - 1024) * 0.001, &(ChassisControl.velocity.x), 0.05);
+                DeadBandOneDimensional((RemoteCtl_Data_tmp.ch1 - 1024) * 0.001, &(ChassisControl.velocity.y), 0.05);
+                DeadBandOneDimensional((RemoteCtl_Data_tmp.ch2 - 1024) * 0.001, &(ChassisControl.velocity.w), 0.05);
                 // 释放底盘控制的互斥锁
                 xSemaphoreGiveRecursive(ChassisControl.xMutex_control);
                 break;

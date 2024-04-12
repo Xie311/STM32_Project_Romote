@@ -16,7 +16,6 @@ double posRef; // 工程中也可调用需要参数来传值
  */
 void DjiRemoteCtl_Decode()
 {
-
     RemoteCtl_RawData.ch0 = ((int16_t)JoyStickReceiveData[0] | ((int16_t)JoyStickReceiveData[1] << 8)) & 0x07FF;
     RemoteCtl_RawData.ch1 = (((int16_t)JoyStickReceiveData[1] >> 3) | ((int16_t)JoyStickReceiveData[2] << 5)) & 0x07FF;
     RemoteCtl_RawData.ch2 = (((int16_t)JoyStickReceiveData[2] >> 6) | ((int16_t)JoyStickReceiveData[3] << 2) |

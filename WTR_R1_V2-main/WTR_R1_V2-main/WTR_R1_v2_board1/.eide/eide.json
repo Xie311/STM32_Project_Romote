@@ -1,0 +1,101 @@
+{
+  "name": "WTR_R1_v2_board1",
+  "type": "ARM",
+  "dependenceList": [],
+  "srcDirs": [
+    ".eide/deps",
+    "Core",
+    "Drivers",
+    "Middlewares",
+    "Usercode"
+  ],
+  "virtualFolder": {
+    "name": "<virtual_root>",
+    "files": [
+      {
+        "path": "startup_stm32f427xx.s"
+      }
+    ],
+    "folders": []
+  },
+  "outDir": "build",
+  "deviceName": null,
+  "packDir": null,
+  "miscInfo": {
+    "uid": "7086a98e326599e316ecd548f290c00a"
+  },
+  "targets": {
+    "Debug": {
+      "excludeList": [],
+      "toolchain": "GCC",
+      "compileConfig": {
+        "cpuType": "Cortex-M4",
+        "floatingPointHardware": "single",
+        "scatterFilePath": "STM32F427IIHx_FLASH.ld",
+        "useCustomScatterFile": true,
+        "storageLayout": {
+          "RAM": [],
+          "ROM": []
+        },
+        "options": "null"
+      },
+      "uploader": "OpenOCD",
+      "uploadConfig": {
+        "bin": "",
+        "target": "stm32f4x",
+        "interface": "cmsis-dap",
+        "baseAddr": "0x08000000"
+      },
+      "uploadConfigMap": {
+        "JLink": {
+          "bin": "",
+          "baseAddr": "",
+          "cpuInfo": {
+            "vendor": "null",
+            "cpuName": "null"
+          },
+          "proType": 1,
+          "speed": 8000,
+          "otherCmds": ""
+        }
+      },
+      "custom_dep": {
+        "name": "default",
+        "incList": [
+          ".eide/deps",
+          "Core/Inc",
+          "Drivers/STM32F4xx_HAL_Driver/Inc",
+          "Drivers/STM32F4xx_HAL_Driver/Inc/Legacy",
+          "Middlewares/Third_Party/FreeRTOS/Source/include",
+          "Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2",
+          "Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F",
+          "Drivers/CMSIS/Device/ST/STM32F4xx/Include",
+          "Drivers/CMSIS/Include",
+          "Usercode/APP/FireBall",
+          "Usercode/APP/Servo",
+          "Usercode/Chassis/Chassis",
+          "Usercode/Chassis/Chassis_Start",
+          "Usercode/Chassis/Chassis_Message",
+          "Usercode/Chassis/Chassis_Config",
+          "Usercode/Chassis/Chassis_RemoteCtl",
+          "Usercode/Chassis/Chassis_Perception",
+          "Usercode/Chassis/Chassis_Callback",
+          "Usercode/Chassis/Chassis_Debug",
+          "Usercode/Chassis/Chassis_PID",
+          "Usercode/Chassis/Chassis_StateMechine",
+          "Usercode/Lib/DJI",
+          "Usercode/Lib/Joytick",
+          "Usercode/Lib/OPS",
+          "Usercode/Lib/Retarget"
+        ],
+        "libList": [],
+        "sourceDirList": [],
+        "defineList": [
+          "USE_HAL_DRIVER",
+          "STM32F427xx"
+        ]
+      }
+    }
+  },
+  "version": "3.3"
+}

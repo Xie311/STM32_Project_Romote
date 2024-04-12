@@ -24,7 +24,7 @@ void DJI_Init()
             hDJI[i].reductionRate = 36.0f;
         }
 
-        hDJI[i].encoder_resolution = 8192.0f;
+        hDJI[i].encoder_resolution = 8192.0f;  //编码器分辨率，即编码器每转产生的脉冲数为8192。
     }
 }
 

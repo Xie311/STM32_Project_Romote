@@ -12,5 +12,6 @@
 #ifndef __CHASSIS_CALLBACK_H__
 #define __CHASSIS_CALLBACK_H__
 #include "Chassis_Start.h"
+#include "wtr_ops.h"  //^^
 
 #endif // __CHASSIS_CALLBACK_H__

@@ -21,5 +21,11 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
     if (huart->Instance == huart_RemoteCtl.Instance)
     {
         DjiRemoteCtl_Decode(); // 大疆遥控器解码
+        
+    }
+    if (huart->Instance == OPS_UART) 
+    {
+        OPS_Decode(); // 当数据接收完成时调用OPS码盘解码函数
     }
 }
+
