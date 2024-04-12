@@ -425,64 +425,67 @@ chatGPT给出的串级PID demo：
 
 // 定义PID参数结构体
 typedef struct {
-    double Kp_outer;
-    double Ki_outer;
-    double Kd_outer;
-    double Kp_inner;
-    double Ki_inner;
-    double Kd_inner;
-    double prev_error_inner;
-    double integral_error_inner;
-    double prev_error_outer;
-    double integral_error_outer;
-    double control_output; // 控制量
-} PIDParameters;
+    double KP;        // PID参数P
+    double KI;        // PID参数I
+    double KD;        // PID参数D
+    double fdb;       // PID反馈值
+    double ref;       // PID目标值
+    double cur_error; // 当前误差
+    double error[2];  // 前两次误差
+    double output;    // 输出值
+    double outputMax; // 最大输出值的绝对值
+    double outputMin; // 最小输出值的绝对值用于防抖
+} PID_t;
 
 // 初始化PID参数
-void initialize_pid_parameters(PIDParameters *pid_params, double Kp_outer, double Ki_outer, double Kd_outer, double Kp_inner, double Ki_inner, double Kd_inner) {
-    pid_params->Kp_outer = Kp_outer;
-    pid_params->Ki_outer = Ki_outer;
-    pid_params->Kd_outer = Kd_outer;
-    pid_params->Kp_inner = Kp_inner;
-    pid_params->Ki_inner = Ki_inner;
-    pid_params->Kd_inner = Kd_inner;
-    pid_params->prev_error_inner = 0.0;
-    pid_params->integral_error_inner = 0.0;
-    pid_params->prev_error_outer = 0.0;
-    pid_params->integral_error_outer = 0.0;
-    pid_params->control_output = 0.0; // 初始化控制量
+void initialize_pid_parameters(PID_t *pid, double KP, double KI, double KD, double outputMax, double outputMin) {
+    pid->KP = KP;
+    pid->KI = KI;
+    pid->KD = KD;
+    pid->fdb = 0.0;  // 初始反馈值为0
+    pid->ref = 0.0; // 初始目标值为0
+    pid->cur_error = 0.0; // 初始误差为0
+    pid->error[0] = 0.0; // 初始前两次误差为0
+    pid->error[1] = 0.0;
+    pid->output = 0.0; // 初始输出值为0
+    pid->outputMax = outputMax; // 设置最大输出值
+    pid->outputMin = outputMin; // 设置最小输出值
 }
 
-// 计算串级PID控制器的输出
-void cascade_pid_control(PIDParameters *pid_params, double target_position, double current_position, double current_velocity) {
-    // 外部PID控制器输出（目标速度）
-    double error_outer = target_position - current_position;
-    pid_params->integral_error_outer += error_outer;
-    double derivative_error_outer = error_outer - pid_params->prev_error_outer;
-    pid_params->prev_error_outer = error_outer;
-    double target_velocity = pid_params->Kp_outer * error_outer + pid_params->Ki_outer * pid_params->integral_error_outer + pid_params->Kd_outer * derivative_error_outer;
+// 计算增量式PID控制器的输出
+void incremental_pid_control(PID_t *pid) {
+    // 计算PID输出增量
+    pid->output += pid->KP * (pid->cur_error - pid->error[1]) + pid->KI * pid->cur_error + pid->KD * (pid->cur_error - 2 * pid->error[1] + pid->error[0]);
 
-    // 内部PID控制器输出（控制量）
-    double error_inner = target_velocity - current_velocity;
-    pid_params->integral_error_inner += error_inner;
-    double derivative_error_inner = error_inner - pid_params->prev_error_inner;
-    pid_params->prev_error_inner = error_inner;
-    pid_params->control_output = pid_params->Kp_inner * error_inner + pid_params->Ki_inner * pid_params->integral_error_inner + pid_params->Kd_inner * derivative_error_inner;
+    // 防抖处理
+    if (pid->output > pid->outputMax) {
+        pid->output = pid->outputMax;
+    } else if (pid->output < -pid->outputMin) {
+        pid->output = -pid->outputMin;
+    }
+
+    // 更新误差历史记录
+    pid->error[0] = pid->error[1];
+    pid->error[1] = pid->cur_error;
 }
 
 int main() {
     // 初始化PID参数
-    PIDParameters pid_params;
-    initialize_pid_parameters(&pid_params, 1.0, 0.1, 0.01, 0.5, 0.05, 0.005);
+    PID_t pid;
+    initialize_pid_parameters(&pid, 1.0, 0.1, 0.01, 100.0, 0.0); // 举例：KP=1.0, KI=0.1, KD=0.01, 输出范围[-100.0, 0.0]
 
     // 使用示例
     double target_position = 100.0; // 目标位置
     double current_position = 80.0;  // 当前位置
-    double current_velocity = 0.0;   // 当前速度
 
-    // 调用串级PID控制函数，更新控制量
-    cascade_pid_control(&pid_params, target_position, current_position, current_velocity);
-    printf("Control Output: %lf\n", pid_params.control_output);
+    // 更新当前误差
+    pid.cur_error = target_position - current_position;
+
+    // 计算增量式PID控制器的输出
+    incremental_pid_control(&pid);
+
+    // 输出PID控制器的输出值
+    printf("PID Output: %lf\n", pid.output);
 
     return 0;
 }

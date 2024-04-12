@@ -22,9 +22,9 @@ double moter_speed[4];
 /**
  * @brief 全向轮底盘逆解算
  * @param moter_speed 每个电机的速度数组
- * @param vx x轴上的平移速度
- * @param vy y轴上的平移速度
- * @param vw 旋转速度
+ * @param vx x轴速度
+ * @param vy y轴速度
+ * @param vw 旋转角速度
  * @return void
  */
 void CalculateOmniWheel(double *moter_speed, double vx, double vy, double vw)
@@ -38,6 +38,7 @@ void CalculateOmniWheel(double *moter_speed, double vx, double vy, double vw)
 
 /**
  * @brief: 计算串级PID控制器的输出串级PID
+ * @author：X311 2024/4/13
  * @param pid_params：指向 PIDParameters 结构体的指针，其中包含了PID控制器的所有参数和状态信息
  * @param target_position：目标位置，即期望达到的位置---来自大疆遥控/上位机
  * @param current_position：当前位置，即系统当前的位置--码盘反馈
