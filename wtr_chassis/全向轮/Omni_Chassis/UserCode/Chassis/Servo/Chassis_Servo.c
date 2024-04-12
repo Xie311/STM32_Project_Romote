@@ -27,25 +27,31 @@ void Chassis_Servo_Init()
  */
 void Chassis_Servo_Task(void const *argument)
 {
-
+    // 延时1秒，等待系统稳定（？）
     osDelay(1000);
     for (;;) {
         xSemaphoreTakeRecursive(ChassisControl.xMutex_control, portMAX_DELAY);
+        // 复制底盘控制数据到临时变量
         CHASSIS_MOVING_STATE ChassisControl_tmp = ChassisControl;
         xSemaphoreGiveRecursive(ChassisControl.xMutex_control);
-
+        
+        //创建一个数组存储四个电机的速度
         double motor_velocity[4] = {0};
-        CalculateOmniWheel(motor_velocity,
-                                   ChassisControl_tmp.velocity.x,
-                                   ChassisControl_tmp.velocity.y,
-                                   ChassisControl_tmp.velocity.w);
+        CalculateOmniWheel( motor_velocity,
+                            ChassisControl_tmp.velocity.x,
+                            ChassisControl_tmp.velocity.y,
+                            ChassisControl_tmp.velocity.w);
+        //创建一个数组存储四个电机的状态                           
         DJI_t hDJI_tmp[4];
 
         vPortEnterCritical();
+        // 将电机状态复制到临时数组中
         for (int i = 0; i < 4; i++) { memcpy(&(hDJI_tmp[i]), WheelComponent.hDJI[i], sizeof(DJI_t)); }
         vPortExitCritical();
 
+        // 遍历四个电机，根据计算得到的速度调整电机状态
         for (int i = 0; i < 4; i++) { speedServo(motor_velocity[i], &(hDJI_tmp[i])); }
+        // 将调整后的电机状态通过CAN总线发送出去
         CanTransmit_DJI_1234(&hcan_Dji,
                              hDJI_tmp[0].speedPID.output,
                              hDJI_tmp[1].speedPID.output,
@@ -53,9 +59,11 @@ void Chassis_Servo_Task(void const *argument)
                              hDJI_tmp[3].speedPID.output);
 
         vPortEnterCritical();
+        // 将调整后的电机状态复制回原始数组中
         for (int i = 0; i < 4; i++) { memcpy(WheelComponent.hDJI[i], &(hDJI_tmp[i]), sizeof(DJI_t)); }
         vPortExitCritical();
 
+        //控制任务执行频率
         osDelay(10);
     }
 }
@@ -80,6 +88,7 @@ void Chassis_Servo_TaskStart()
 /**
  * @brief 大疆电机初始化
  * @return {*}
+ * @note   若选用其他电机型号，则需在这里修改motorType
  */
 void Chassis_Servo_DjiMotorInit()
 {
@@ -88,12 +97,13 @@ void Chassis_Servo_DjiMotorInit()
     WheelComponent.hDJI[1] = &hDJI[1];
     WheelComponent.hDJI[2] = &hDJI[2];
     WheelComponent.hDJI[3] = &hDJI[3];
-    hDJI[0].motorType      = M3508;
-    hDJI[1].motorType      = M3508;
-    hDJI[2].motorType      = M3508;
-    hDJI[3].motorType      = M3508;
+    hDJI[0].motorType      = M2006;
+    hDJI[1].motorType      = M2006;
+    hDJI[2].motorType      = M2006;
+    hDJI[3].motorType      = M2006;
     DJI_Init();
 }
+
 /**
  * @brief T型速度规划函数
  * @param initialAngle 初始角度

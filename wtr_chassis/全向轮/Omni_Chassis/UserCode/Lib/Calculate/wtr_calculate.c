@@ -139,17 +139,20 @@ void DeadBand(double x, double y, double *new_x, double *new_y, double threshoul
  * @param {double} *new_x
  * @param {double} threshould
  * @return {*}
+ * @note   对输入值进行死区处理，防止过小的输入值对系统产生影响
  */
 void DeadBandOneDimensional(double x, double *new_x, double threshould)
 {
-
+    // 计算输入值的绝对值与死区阈值的差值
     double difference_x = fabs(x) - threshould;
-
+    
+    // 如果差值小于0，即输入值在死区范围内
     if (difference_x < 0) {
         *new_x = 0;
         return;
     }
 
+    // 计算缩放因子k，用于对输入值进行缩放
     double k = difference_x / fabs(x);
     *new_x   = k * x;
 }

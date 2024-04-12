@@ -19,22 +19,27 @@ CHASSIS_MOVING_STATE ChassisState;
 void Chassis_StateMachine_Task(void const *argument)
 {
     for (;;) {
-        osKernelLock();
-        Remote_t RemoteCtl_RawData_tmp = RemoteCtl_RawData;
-        osKernelUnlock();
+        vPortEnterCritical();                                   // 进入临界区，防止多个任务同时访问 RemoteCtl_RawData
+        Remote_t RemoteCtl_RawData_tmp = RemoteCtl_RawData;     // 复制遥控器数据到临时变量
+        vPortExitCritical();                                    // 退出临界区
         switch (RemoteCtl_RawData_tmp.left) {
             case Stop:
+                // 获取底盘控制的互斥锁，防止多任务同时修改底盘控制数据
                 xSemaphoreTakeRecursive(ChassisControl.xMutex_control, portMAX_DELAY);
                 ChassisControl.velocity.x = 0;
                 ChassisControl.velocity.y = 0;
                 ChassisControl.velocity.w = 0;
+                // 释放底盘控制的互斥锁
                 xSemaphoreGiveRecursive(ChassisControl.xMutex_control);
                 break;
             case Run:
+                // 获取底盘控制的互斥锁，防止多任务同时修改底盘控制数据
                 xSemaphoreTakeRecursive(ChassisControl.xMutex_control, portMAX_DELAY);
+                // 根据遥控器输入设置底盘速度，同时进行死区处理
                 DeadBandOneDimensional((RemoteCtl_RawData_tmp.ch0 - 1024) * 0.001, &(ChassisControl.velocity.x), 0.05);
                 DeadBandOneDimensional((RemoteCtl_RawData_tmp.ch1 - 1024) * 0.001, &(ChassisControl.velocity.y), 0.05);
                 DeadBandOneDimensional((RemoteCtl_RawData_tmp.ch2 - 1024) * 0.001, &(ChassisControl.velocity.w), 0.05);
+                // 释放底盘控制的互斥锁
                 xSemaphoreGiveRecursive(ChassisControl.xMutex_control);
                 break;
             case Correcting:
@@ -53,9 +58,6 @@ void Chassis_StateMachine_Task(void const *argument)
  */
 void Chassis_StateMachine_TaskStart()
 {
-    // osThreadDef(Chassis_StateMachine, Chassis_StateMachine_Task, osPriorityAboveNormal, 0, 1024);
-    // osThreadCreate(osThread(Chassis_StateMachine), NULL);
-    // 定义线程属性
     const osThreadAttr_t Chassis_StateMachine_attr = 
     {
         .name = "Chassis_StateMachine",
