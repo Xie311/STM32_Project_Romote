@@ -116,7 +116,7 @@ void StartDefaultTask(void const *argument)
 }
 ```
 
-> 所以`CHASSIS_Start.h`里 include了一堆头文件..
+> 所以`CHASSIS_Start.h`里 include了一堆头文件
 
 ### 3.状态机
 
