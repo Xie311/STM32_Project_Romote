@@ -1,9 +1,9 @@
 /*
  * @Author: Chen Yitong
  * @Date: 2023-09-23 13:49:36
- * @LastEditors: Chen Yitong
+ * @LastEditors: x311 
  * @LastEditTi 10-09 15:57:22
- * @FilePath: \WTR_Chassis\麦克纳姆轮\UserCode\Chassis\Servo\Chassis_Servo.c
+ * @FilePath: \WTR_Omni_Chassis\UserCode\Chassis\Servo\Chassis_Servo.c
  * @Brief: 底盘伺服函数
  *
  * Copyright (c) 2023 by ChenYiTong, All Rights Reserved.
@@ -11,6 +11,7 @@
 
 #include "Chassis_Servo.h"
 WHEEL_COMPONENT WheelComponent;
+Target_Position TargetPosition;
 
 /**
  * @brief: 伺服初始化
@@ -57,7 +58,8 @@ void Chassis_Servo_Task(void const *argument)
         // 遍历四个电机，根据计算得到的速度调整电机状态
 
         // for (int i = 0; i < 4; i++) { speedServo(motor_velocity[i], &(hDJI_tmp[i])); }
-        for (int i = 0; i < 4; i++) { positionServo(500, &(hDJI_tmp[i])); }
+        //for (int i = 0; i < 4; i++) { positionServo(500, &(hDJI_tmp[i])); }
+        for (int i = 0; i < 4; i++) { Cas_Servo(TargetPosition, &(hDJI_tmp[i]),OPS_Data); }
 
         // 将调整后的电机状态通过CAN总线发送出去
         CanTransmit_DJI_1234(&hcan_Dji,

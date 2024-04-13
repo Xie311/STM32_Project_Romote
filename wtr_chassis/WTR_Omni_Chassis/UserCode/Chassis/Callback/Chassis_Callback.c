@@ -28,6 +28,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
         OPS_Decode(); // 当数据接收完成时调用OPS码盘解码函数
     }
 
+
     //Mavlink从上位机接收数据
 }
 

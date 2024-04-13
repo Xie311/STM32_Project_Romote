@@ -41,6 +41,12 @@ typedef __IO struct
 typedef __IO struct {
     DJI_t *hDJI[4];
     SemaphoreHandle_t xMutex_wheel; // 互斥锁
-} WHEEL_COMPONENT; //轮子控制，在Chssis_Variable中声明，在Servo.c中被调用
+} WHEEL_COMPONENT; //轮子控制 [在Chssis_Variable中声明，在Servo.c中被调用]
+
+typedef __IO struct{
+    float pos_x;
+    float pos_y;
+    float w_z;
+} Target_Position;
 
 #endif // __CHASSIS_COMMEN_H__

@@ -1,7 +1,7 @@
 /*
  * @Author: szf
  * @Date: 2023-02-22 12:04:21
- * @LastEditTime: 2024-04-13 22:27:19
+ * @LastEditTime: 2024-04-13 23:54:14
  * @LastEditors: x311 
  * @brief 运动学逆解算及PID计算函数
  * @FilePath: \WTR_Omni_Chassis\UserCode\Lib\Calculate\wtr_calculate.c
@@ -37,27 +37,33 @@ void CalculateOmniWheel(double *moter_speed, double vx, double vy, double vw)
     moter_speed[3] = (vx * cos(7*M_PI/4) - vy * sin(7*M_PI/4) - vw * rotate_ratio * wheel_radius) * wheel_rpm_ratio;
 }
 
+
 /**
  * @brief: 串级PID控制
  * @author：X311 2024/4/13
- * @param motor : 电机结构体(当前速度)
- * @param OPS_data:码盘反馈值（当前位置）
- * @param target_position：目标位置，即期望达到的位置---来自大疆遥控/上位机
+ * @param motor : 电机结构体--当前速度
+ * @param OPS_data:码盘反馈值--当前位置
+ * @param target_position：期望位置--来自大疆遥控/上位机
  * @return {*}
- * @note:直接先位置再速度封装一下呢（？）
 */
-void Cascade_PID_Calc(DJI_t *motor, OPS_t *OPS_Data, double target_position) 
+void Cas_Servo(Target_Position *TargetPosition, DJI_t *motor, OPS_t *OPS_Data)
 {
     // 外部PID控制器输出（目标速度）
-    OPS_Data->opsPID.ref = target_position;
+    OPS_Data->opsPID.ref = TargetPosition->pos_x;
     OPS_Data->opsPID.fdb = OPS_Data->pos_x;
-
     PID_Calc(&(OPS_Data->opsPID));
+    float cas_ref_x = OPS_Data->opsPID.output;
 
-    double cas_ref=OPS_Data->opsPID.output;
+    OPS_Data->opsPID.ref = TargetPosition->pos_y;
+    OPS_Data->opsPID.fdb = OPS_Data->pos_y;
+    PID_Calc(&(OPS_Data->opsPID));
+    double cas_ref_y=OPS_Data->opsPID.output;
+
     // 内部PID控制器输出（控制量）
-    speedServo(cas_ref,motor);
+    speedServo(cas_ref_x, motor);
+    speedServo(cas_ref_y, motor);
 }
+
 
 
 /**
