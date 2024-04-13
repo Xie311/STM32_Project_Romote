@@ -8,6 +8,7 @@
 
 #include "stm32f4xx.h"
 #include "usart.h"
+#include "wtr_calculate.h"
 /************************ 用户定义 ***************************/
 #define OPS_UART_HANDLE huart8 // 串口选项
 #define OPS_UART        UART8  // 串口选项
@@ -21,6 +22,8 @@ typedef struct OPS_t {
     float x_angle; // 横滚角
     float y_angle; // 偏航角
     float w_z;     // 角速度
+
+    PID_t opsPID;
 } OPS_t;           // OPS数据结构体
 
 extern OPS_t OPS_Data;

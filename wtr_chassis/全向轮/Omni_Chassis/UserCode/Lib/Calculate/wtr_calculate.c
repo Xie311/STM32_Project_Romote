@@ -37,30 +37,39 @@ void CalculateOmniWheel(double *moter_speed, double vx, double vy, double vw)
 }
 
 /**
- * @brief: 计算串级PID控制器的输出串级PID
+ * @brief: 串级PID控制
  * @author：X311 2024/4/13
- * @param pid_params：指向 PIDParameters 结构体的指针，其中包含了PID控制器的所有参数和状态信息
+ * @param motor : 电机结构体(当前速度)
+ * @param OPS_data:码盘反馈值（当前位置）
  * @param target_position：目标位置，即期望达到的位置---来自大疆遥控/上位机
- * @param current_position：当前位置，即系统当前的位置--码盘反馈
- * @param current_velocity：当前速度，即系统当前的速度--电机通过CAN回传
  * @return {*}
  * @note:直接先位置再速度封装一下呢（？）
 */
-void cascade_pid_control(PIDParameters *pid_params, double target_position, double current_position, double current_velocity) {
+void Cascade_PID_Calc(DJI_t *motor, OPS_t *OPS_Data, double target_position) 
+{
     // 外部PID控制器输出（目标速度）
-    double error_outer = target_position - current_position;
-    pid_params->integral_error_outer += error_outer;
-    double derivative_error_outer = error_outer - pid_params->prev_error_outer;
-    pid_params->prev_error_outer = error_outer;
-    double target_velocity = pid_params->Kp_outer * error_outer + pid_params->Ki_outer * pid_params->integral_error_outer + pid_params->Kd_outer * derivative_error_outer;
+    Cas_positionServo(target_position, OPS_Data);
+    double cas_ref=OPS_Data->opsPID.output;
 
     // 内部PID控制器输出（控制量）
-    double error_inner = target_velocity - current_velocity;
-    pid_params->integral_error_inner += error_inner;
-    double derivative_error_inner = error_inner - pid_params->prev_error_inner;
-    pid_params->prev_error_inner = error_inner;
-    pid_params->control_output = pid_params->Kp_inner * error_inner + pid_params->Ki_inner * pid_params->integral_error_inner + pid_params->Kd_inner * derivative_error_inner;
+    speedServo(cas_ref,motor);
 }
+
+/**
+ * @brief: 串级PID码盘位置伺服
+ * @auther: X311
+ * @param {float} ref 目标位置(大疆遥控/上位机传来)
+ * @param {OPS_t} OPS_Data
+ * @return {*}
+ */
+void Cas_positionServo(float ref, OPS_t *OPS_Data)
+{
+    OPS_Data->opsPID.ref = ref;
+    OPS_Data->opsPID.fdb = OPS_Data->pos_x;
+
+    PID_Calc(&(OPS_Data->opsPID));
+}
+
 
 
 /**
@@ -99,12 +108,14 @@ void P_Calc(__IO PID_t *pid)
         pid->output = 0;
 }
 
+
 /**
  * @brief: 位置伺服
  * @auther: Chen YiTong 3083697520
  * @param {float} ref 目标位置
  * @param {DJI_t} *motor 电机结构体
  * @return {*}
+ * @note 位置-速度串级
  */
 void positionServo(float ref, DJI_t *motor)
 {
