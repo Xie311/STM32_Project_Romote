@@ -31,9 +31,16 @@ void Chassis_Servo_Task(void const *argument)
     // 延时1秒，等待系统稳定（？）
     osDelay(1000);
     for (;;) {
+
         xSemaphoreTakeRecursive(ChassisControl.xMutex_control, portMAX_DELAY);
         // 复制底盘控制数据到临时变量
         CHASSIS_MOVING_STATE ChassisControl_tmp = ChassisControl;
+
+        TargetPosition.pos_x = 500;
+        TargetPosition.pos_y = 500;
+        TargetPosition.w_z   = 0;
+
+        //OPS_Data.pos_x = 200;
         xSemaphoreGiveRecursive(ChassisControl.xMutex_control);
 
         // 创建一个数组存储四个电机的速度
@@ -46,22 +53,17 @@ void Chassis_Servo_Task(void const *argument)
         DJI_t hDJI_tmp[4];
 
         vPortEnterCritical();
-
-        /** @brief: 将电机状态复制到临时数组中
-         * Q：这里为什么要复制到临时数组，临时数组计算发送后再复制到原数组，而不是直接计算发送？为了确保在调整电机状态时不会影响到原始数据？
-         *       在互斥锁直接修改WheelComponent.hDJI效果是否一样？
-         * A: 防止互斥锁阻塞其他进程
-         */
         for (int i = 0; i < 4; i++) { memcpy(&(hDJI_tmp[i]), WheelComponent.hDJI[i], sizeof(DJI_t)); }
         vPortExitCritical();
 
         // 遍历四个电机，根据计算得到的速度调整电机状态
+        
+        
+        //for (int i = 0; i < 4; i++) { speedServo(motor_velocity[i], &(hDJI_tmp[i])); }
+        //for (int i = 0; i < 4; i++) { positionServo(300, &(hDJI_tmp[i])); }
+        for (int i = 0; i < 4; i++) { CasServo(&(TargetPosition), &(hDJI_tmp[i]),&(OPS_Data)); }
 
-        // for (int i = 0; i < 4; i++) { speedServo(motor_velocity[i], &(hDJI_tmp[i])); }
-        //for (int i = 0; i < 4; i++) { positionServo(500, &(hDJI_tmp[i])); }
-        for (int i = 0; i < 4; i++) { Cas_Servo(TargetPosition, &(hDJI_tmp[i]),OPS_Data); }
-
-        // 将调整后的电机状态通过CAN总线发送出去
+        // 将调整后的电机状态通过CAN总线发送
         CanTransmit_DJI_1234(&hcan_Dji,
                              hDJI_tmp[0].speedPID.output,
                              hDJI_tmp[1].speedPID.output,

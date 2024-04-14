@@ -1,9 +1,9 @@
 /*
  * @Author: Chen Yitong
  * @Date: 2023-09-23 12:53:53
- * @LastEditors: Chen Yitong 
- * @LastEditTime: 2023-10-21 21:56:38
- * @FilePath: \WTR_Chassis\麦克纳姆轮\UserCode\Chassis\Config\Chassis_UserConfig.h
+ * @LastEditors: x311 
+ * @LastEditTime: 2024-04-14 22:47:49
+ * @FilePath: \WTR_Omni_Chassis\UserCode\Chassis\Config\Chassis_UserConfig.h
  * @Brief: 自定义宏
  *
  * Copyright (c) 2023 by ChenYiTong, All Rights Reserved.
