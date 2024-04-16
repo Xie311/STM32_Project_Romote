@@ -23,6 +23,10 @@ typedef struct Tar_t {
     float pos_x;   // x坐标
     float pos_y;   // y坐标
 
+    float vx;      // x轴速度
+    float vy;      // y轴速度
+    float vw;      // 角速度w
+
     int state;     //状态
 } Tar_t; 
 

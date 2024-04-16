@@ -36,10 +36,11 @@ void Chassis_StateMachine_Task(void const *argument)
             case Run:
                 // 获取底盘控制的互斥锁，防止多任务同时修改底盘控制数据
                 xSemaphoreTakeRecursive(ChassisControl.xMutex_control, portMAX_DELAY);
-                // 根据遥控器输入设置底盘速度，同时进行死区处理
-                // DeadBandOneDimensional((RemoteCtl_Data_tmp.ch0 - 1024) * 0.001, &(ChassisControl.velocity.x), 0.05);
-                // DeadBandOneDimensional((RemoteCtl_Data_tmp.ch1 - 1024) * 0.001, &(ChassisControl.velocity.y), 0.05);
-                // DeadBandOneDimensional((RemoteCtl_Data_tmp.ch2 - 1024) * 0.001, &(ChassisControl.velocity.w), 0.05);
+                // 根据上位机传来数据输入设置底盘速度，同时进行死区处理
+                DeadBandOneDimensional(Tar_Data.vx, &(ChassisControl.velocity.x), 0.05);
+                DeadBandOneDimensional(Tar_Data.vy, &(ChassisControl.velocity.y), 0.05);
+                DeadBandOneDimensional(Tar_Data.vw, &(ChassisControl.velocity.w), 0.05);
+
                 // 释放底盘控制的互斥锁
                 xSemaphoreGiveRecursive(ChassisControl.xMutex_control);
                 break;
