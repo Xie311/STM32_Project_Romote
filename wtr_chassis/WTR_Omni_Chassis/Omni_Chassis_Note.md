@@ -44,7 +44,7 @@ void StartDefaultTask(void const *argument)
 12
 HSE
 6
-
+180
 ```
 
 
@@ -432,75 +432,15 @@ void Chassis_Servo_Task(void const *argument)
 
 **！！!  使用OPS解码函数需在 `UserCode\Lib\OPS\wtr_ops.h` 中用户定义段修改串口选项**
 
+**！！！记得使能UART_Receive！！！** `HAL_UART_Receive_IT(&huart7, ops_buffer, sizeof(OPS_Data));`
+
 ---
-chatGPT给出的串级PID demo：
+`wtr_ops.c` 定义``OPS_Data`结构体
 
-```c
-#include <stdio.h>
+`Chassis_Callback.c `串口中断回调接收码盘数据并解码
 
-// 定义PID参数结构体
-typedef struct {
-    double Kp_outer;            // 外层PID参数P
-    double Ki_outer;            // 外层PID参数I
-    double Kd_outer;            // 外层PID参数D
-    double Kp_inner;            // 内层PID参数P
-    double Ki_inner;            // 内层PID参数I
-    double Kd_inner;            // 内层PID参数D
-    double prev_error_inner;    // 内层PID上一次误差
-    double prev_error_outer;    // 外层PID上一次误差
-    double prev_output;         // 上一次控制量
-} PIDParameters;
+`Chassis_Servo.c` 中调用 `OPS_Data`进行串级PID计算
 
-// 初始化PID参数
-void initialize_pid_parameters(PIDParameters *pid_params, double Kp_outer, double Ki_outer, double Kd_outer, double Kp_inner, double Ki_inner, double Kd_inner) {
-    pid_params->Kp_outer = Kp_outer;
-    pid_params->Ki_outer = Ki_outer;
-    pid_params->Kd_outer = Kd_outer;
-    pid_params->Kp_inner = Kp_inner;
-    pid_params->Ki_inner = Ki_inner;
-    pid_params->Kd_inner = Kd_inner;
-    pid_params->prev_error_inner = 0.0;
-    pid_params->prev_error_outer = 0.0;
-    pid_params->prev_output = 0.0; // 初始化上一次控制量
-}
+## 三、To  be continued...
 
-// 计算串级增量式PID控制器的输出
-void cascade_incremental_pid_control(PIDParameters *pid_params, double target_position, double current_position, double current_velocity) {
-    // 外部PID控制器增量（目标速度）
-    double error_outer = target_position - current_position;
-    double delta_error_outer = error_outer - pid_params->prev_error_outer;
-    pid_params->prev_error_outer = error_outer;
-    double delta_output_outer = pid_params->Kp_outer * delta_error_outer + pid_params->Ki_outer * error_outer + pid_params->Kd_outer * (delta_error_outer - pid_params->prev_error_inner);
-
-    // 内部PID控制器增量（控制量）
-    double error_inner = delta_output_outer - current_velocity;
-    double delta_error_inner = error_inner - pid_params->prev_error_inner;
-    pid_params->prev_error_inner = error_inner;
-    pid_params->prev_output += pid_params->Kp_inner * delta_error_inner + pid_params->Ki_inner * error_inner + pid_params->Kd_inner * (delta_error_inner - (pid_params->prev_output - pid_params->prev_error_inner));
-}
-
-// 封装成一个函数
-void cascade_pid_control(PIDParameters *pid_params, double target_position, double current_position, double current_velocity) {
-    // 调用串级增量式PID控制函数，更新控制量
-    cascade_incremental_pid_control(pid_params, target_position, current_position, current_velocity);
-}
-
-int main() {
-    // 初始化PID参数
-    PIDParameters pid_params;
-    initialize_pid_parameters(&pid_params, 1.0, 0.1, 0.01, 0.5, 0.05, 0.005);
-
-    // 使用示例
-    double target_position = 100.0; // 目标位置
-    double current_position = 80.0;  // 当前位置
-    double current_velocity = 0.0;   // 当前速度
-
-    // 调用串级PID控制函数，更新控制量
-    cascade_pid_control(&pid_params, target_position, current_position, current_velocity);
-    printf("Control Output: %lf\n", pid_params.prev_output);
-
-    return 0;
-}
-```
-
-OPS_Data 返回pos_x、pos_y 、theta
+- 删去原代码中大疆遥控部分，改为上位机发送数据

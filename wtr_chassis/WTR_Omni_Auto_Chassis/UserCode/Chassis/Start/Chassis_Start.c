@@ -17,8 +17,6 @@
 void StartDefaultTask(void const *argument)
 {
     //================初始化====================
-   // HAL_UART_Transmit(&huart7, (uint8_t *)("hello world\n"), 15, 10);
-    Chassis_RemoteCtl_Init();    // 遥控初始化
     Chassis_StateMachine_Init(); // 状态机初始化
     Chassis_Servo_Init();        // 底盘电机初始化
     osDelay(1000);               // 等待外设初始化结束
