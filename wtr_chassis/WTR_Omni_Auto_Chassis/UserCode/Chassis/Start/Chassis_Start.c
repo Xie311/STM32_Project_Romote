@@ -25,7 +25,8 @@ void StartDefaultTask(void const *argument)
     //================启动线程==================
     Chassis_StateMachine_TaskStart(); // 状态机进程启动
     Chassis_Servo_TaskStart();        // 底盘伺服进程启动
-    Debug_TaskStart();                // 调试线程
+    OPS_Debug_TaskStart();            // 码盘调试线程
+    Tar_Debug_TaskStart();            // 数据接收调试线程
 
     for (;;) {
         HAL_GPIO_TogglePin(LED_R_GPIO_Port, LED_R_Pin);

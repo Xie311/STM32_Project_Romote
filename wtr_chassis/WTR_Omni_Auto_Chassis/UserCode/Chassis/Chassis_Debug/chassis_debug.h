@@ -3,7 +3,10 @@
 
 #include "chassis_start.h"
 
-void Debug_TaskStart(void);
-void Debug_Task(void *argument);
+void OPS_Debug_TaskStart(void);
+void OPS_Debug_Task(void *argument);
+
+void Tar_Debug_TaskStart(void);
+void Tar_Debug_Task(void *argument);
 
 #endif

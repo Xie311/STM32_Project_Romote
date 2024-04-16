@@ -30,6 +30,7 @@
 #include "chassis_perception.h"
 #include "wtr_target.h"
 #include "io_retargetToUart.h"
+#include "chassis_debug.h"
 
 
 #endif
