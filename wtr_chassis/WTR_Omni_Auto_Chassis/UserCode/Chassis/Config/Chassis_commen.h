@@ -44,4 +44,4 @@ typedef __IO struct {
 } WHEEL_COMPONENT; //轮子控制 [在Chssis_Variable中声明，在Servo.c中被调用]
 
 
-#endif // __CHASSIS_COMMEN_H__
+#endif // __CHASSIS_COMMEN_H__ 

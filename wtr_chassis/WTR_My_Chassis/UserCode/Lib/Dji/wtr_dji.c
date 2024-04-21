@@ -105,6 +105,9 @@ void DJI_Update(DJI_t *motor, uint8_t *fdbData)
     motor->Calculate.RotorAngle_all = motor->Calculate.RotorRound * 360 + motor->Calculate.RotorAngle_0_360_Log[NOW] - motor->Calculate.RotorAngle_0_360_OffSet;
 }
 
+/**
+ * @brief:
+*/
 void get_dji_offset(DJI_t *motor, uint8_t *fdbData)
 {
     motor->FdbData.RotorAngle_0_360             = (fdbData[0] << 8 | fdbData[1]) * 360.0f / motor->encoder_resolution;

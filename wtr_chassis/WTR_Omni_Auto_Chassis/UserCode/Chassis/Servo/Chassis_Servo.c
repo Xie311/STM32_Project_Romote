@@ -3,7 +3,7 @@
  * @Date: 2023-09-23 13:49:36
  * @LastEditors: x311 
  * @LastEditTi 10-09 15:57:22
- * @FilePath: \WTR_Omni_Chassis\UserCode\Chassis\Servo\Chassis_Servo.c
+ * @FilePath: \WTR_Omni_Auto_Chassis\UserCode\Chassis\Servo\Chassis_Servo.c
  * @Brief: 底盘伺服函数
  *
  * Copyright (c) 2023 by ChenYiTong, All Rights Reserved.
@@ -31,12 +31,16 @@ void Chassis_Servo_Task(void const *argument)
     osDelay(1000);
     for (;;) {
         xSemaphoreTakeRecursive(ChassisControl.xMutex_control, portMAX_DELAY);
-        // 复制底盘控制数据到临时变量
+        // 复制底盘控制数据（目标位置 来自上位机 [StateMachine.c]）到临时变量
         CHASSIS_MOVING_STATE ChassisControl_tmp = ChassisControl;
         xSemaphoreGiveRecursive(ChassisControl.xMutex_control);
 
+        // 通过码盘反馈的当前位置与上位机传来的期望位置PID计算得到期望vx、vy
+        OPS_Servo(&(ChassisControl_tmp), &(OPS_Data));
+
         // 创建一个数组存储四个电机的速度
         double motor_velocity[4] = {0};
+
         CalculateOmniWheel(motor_velocity,
                            ChassisControl_tmp.velocity.x,
                            ChassisControl_tmp.velocity.y,
@@ -49,10 +53,9 @@ void Chassis_Servo_Task(void const *argument)
         vPortExitCritical();
 
         // 遍历四个电机，根据计算得到的速度调整电机状态
-        
-        //for (int i = 0; i < 4; i++) { speedServo(motor_velocity[i], &(hDJI_tmp[i])); }
-        //for (int i = 0; i < 4; i++) { positionServo(300, &(hDJI_tmp[i])); }
-        for (int i = 0; i < 4; i++) { CasServo(&(Tar_Data), &(hDJI_tmp[i]),&(OPS_Data)); }
+        for (int i = 0; i < 4; i++) { speedServo(motor_velocity[i], &(hDJI_tmp[i])); }
+        // for (int i = 0; i < 4; i++) { positionServo(360, &(hDJI_tmp[i])); }
+        // for (int i = 0; i < 4; i++) { CasServo(&(Tar_Data), &(hDJI_tmp[i]),&(OPS_Data)); }
 
         // 将调整后的电机状态通过CAN总线发送
         CanTransmit_DJI_1234(&hcan_Dji,

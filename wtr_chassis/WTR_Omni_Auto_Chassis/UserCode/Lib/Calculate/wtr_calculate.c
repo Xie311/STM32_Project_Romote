@@ -1,10 +1,10 @@
 /*
  * @Author: szf
  * @Date: 2023-02-22 12:04:21
- * @LastEditTime: 2024-04-14 14:26:35
+ * @LastEditTime: 2024-04-21 14:50:58
  * @LastEditors: x311 
  * @brief 运动学逆解算及PID计算函数
- * @FilePath: \WTR_Omni_Chassis\UserCode\Lib\Calculate\wtr_calculate.c
+ * @FilePath: \WTR_Omni_Auto_Chassis\UserCode\Lib\Calculate\wtr_calculate.c
  */
 
 #include "wtr_calculate.h"
@@ -37,28 +37,29 @@ void CalculateOmniWheel(double *moter_speed, double vx, double vy, double vw)
     moter_speed[3] = (vx * cos(7*M_PI/4) - vy * sin(7*M_PI/4) - vw * rotate_ratio * wheel_radius) * wheel_rpm_ratio;
 }
 
-/**
- * @brief: 串级PID控制
- * @author：X311 2024/4/13
- * @param TargetPosition：期望位置--来自大疆遥控/上位机
- * @param motor : 电机结构体--当前速度
- * @param OPS_data:码盘反馈值--当前位置
- * @return {*}
- */
-void CasServo(Tar_t *TargetPosition, DJI_t *motor, OPS_t *OPS_Data)
-{
-    OPS_Data->opsPID.ref = sqrt((TargetPosition->pos_x)*(TargetPosition->pos_x)+(TargetPosition->pos_y)*(TargetPosition->pos_y));
-    OPS_Data->opsPID.fdb = sqrt((OPS_Data->pos_x) * (OPS_Data->pos_x) +(OPS_Data->pos_y) * (OPS_Data->pos_y));
-    PID_Calc(&(OPS_Data->opsPID));
+// /**
+//  * @brief: 串级PID控制
+//  * @author：X311 2024/4/13
+//  * @param TargetPosition：期望位置--来自大疆遥控/上位机
+//  * @param motor : 电机结构体--当前速度
+//  * @param OPS_data:码盘反馈值--当前位置
+//  * @return {*}
+//  */
+// void CasServo(Tar_t *TargetPosition, DJI_t *motor, OPS_t *OPS_Data)
+// {
+//     //理论上应该修改第二层PID的参数（？），但是牵一发而动全身，所以尝试通过比例系数K得到修改Kp的效果
+//     float k  = 1;
+//     OPS_Data->opsPID.ref = sqrt((TargetPosition->pos_x) * (TargetPosition->pos_x) + (TargetPosition->pos_y) * (TargetPosition->pos_y));
+//     OPS_Data->opsPID.fdb = sqrt((OPS_Data->pos_x) * (OPS_Data->pos_x) +(OPS_Data->pos_y) * (OPS_Data->pos_y));
+//     PID_Calc(&(OPS_Data->opsPID));
 
-    motor->speedPID.ref = OPS_Data->opsPID.output;
-    motor->speedPID.fdb = motor->FdbData.rpm;
-    PID_Calc(&(motor->speedPID));
+//     motor->speedPID.ref = k*OPS_Data->opsPID.output;
+//     motor->speedPID.fdb = motor->FdbData.rpm;
+//     PID_Calc(&(motor->speedPID));
 
-    //OPS_Data->opsPID.ref = TargetPosition->pos_y;
-    //OPS_Data->opsPID.fdb = OPS_Data->pos_y;
-}
-
+//     //OPS_Data->opsPID.ref = TargetPosition->pos_y;
+//     //OPS_Data->opsPID.fdb = OPS_Data->pos_y;
+// }
 
 
 /**
@@ -109,9 +110,9 @@ void P_Calc(__IO PID_t *pid)
  */
 void positionServo(float ref, DJI_t *motor)
 {
-
     motor->posPID.ref = ref;
     motor->posPID.fdb = motor->AxisData.AxisAngle_inDegree;
+    PID_Calc(&(motor->posPID));
 
     motor->speedPID.ref = motor->posPID.output;
     motor->speedPID.fdb = motor->FdbData.rpm;
@@ -130,6 +131,30 @@ void speedServo(float ref, DJI_t *motor)
     motor->speedPID.ref = ref;
     motor->speedPID.fdb = motor->FdbData.rpm;
     PID_Calc(&(motor->speedPID));
+}
+
+/**
+ * @brief :码盘串级PID
+ * @author:X311 2024/4/21
+ * @param： ChassisControl 底盘运动状态
+ * @param： OPS_Data  码盘反馈数据
+ * @note：  通过码盘反馈的当前位置与上位机传来的目标位置PID计算得到vx、vy
+ * @note：  将vx、vy存储到ChassisControl中的velocity结构体内
+ */
+void OPS_Servo(CHASSIS_MOVING_STATE *ChassisControl, OPS_t *OPS_Data)
+{
+    OPS_Data->opsPID_x.ref = ChassisControl->position.x;
+    OPS_Data->opsPID_y.ref = ChassisControl->position.y;
+
+    OPS_Data->opsPID_x.fdb = OPS_Data->pos_x;
+    OPS_Data->opsPID_y.fdb = OPS_Data->pos_y;
+
+    PID_Calc(&(OPS_Data->opsPID_x));
+    PID_Calc(&(OPS_Data->opsPID_y));
+
+    ChassisControl->velocity.x = OPS_Data->opsPID_x.output;
+    ChassisControl->velocity.y = OPS_Data->opsPID_y.output;
+    ChassisControl->velocity.w = OPS_Data->w_z;
 }
 
 /**

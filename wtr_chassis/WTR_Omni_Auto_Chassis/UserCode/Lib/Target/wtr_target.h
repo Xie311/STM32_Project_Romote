@@ -27,7 +27,7 @@ typedef struct Tar_t {
     float vy;      // y轴速度
     float vw;      // 角速度w
 
-    int state;     //状态
+    int state;   // 状态：1停止；2校准；3启动
 } Tar_t; 
 
 extern Tar_t Tar_Data;

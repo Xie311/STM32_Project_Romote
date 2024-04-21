@@ -57,8 +57,6 @@ void Chassis_Servo_Task(void const *argument)
         vPortExitCritical();
 
         // 遍历四个电机，根据计算得到的速度调整电机状态
-        
-        
         //for (int i = 0; i < 4; i++) { speedServo(motor_velocity[i], &(hDJI_tmp[i])); }
         //for (int i = 0; i < 4; i++) { positionServo(300, &(hDJI_tmp[i])); }
         for (int i = 0; i < 4; i++) { CasServo(&(TargetPosition), &(hDJI_tmp[i]),&(OPS_Data)); }

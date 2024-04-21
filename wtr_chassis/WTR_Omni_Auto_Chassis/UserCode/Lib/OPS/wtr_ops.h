@@ -23,7 +23,8 @@ typedef struct OPS_t {
     float y_angle; // 偏航角
     float w_z;     // 角速度
 
-    PID_t opsPID;
+    PID_t opsPID_x;
+    PID_t opsPID_y;
 } OPS_t;           // OPS数据结构体
 
 extern OPS_t OPS_Data;

@@ -2,7 +2,7 @@
  * @Author: Chen Yitong 3083697520@qq.com
  * @Date: 2023-09-23 11:33:41
  * @LastEditors: x311 
- * @LastEditTime: 2024-04-16 20:35:56
+ * @LastEditTime: 2024-04-21 11:09:34
  * @FilePath: \WTR_Omni_Auto_Chassis\UserCode\Chassis\StateMachine\Chassis_StateMachine.c
  * @brief 底盘状态机
  *
@@ -37,10 +37,9 @@ void Chassis_StateMachine_Task(void const *argument)
                 // 获取底盘控制的互斥锁，防止多任务同时修改底盘控制数据
                 xSemaphoreTakeRecursive(ChassisControl.xMutex_control, portMAX_DELAY);
                 // 根据上位机传来数据输入设置底盘速度，同时进行死区处理
-                DeadBandOneDimensional(Tar_Data.vx, &(ChassisControl.velocity.x), 0.05);
-                DeadBandOneDimensional(Tar_Data.vy, &(ChassisControl.velocity.y), 0.05);
-                DeadBandOneDimensional(Tar_Data.vw, &(ChassisControl.velocity.w), 0.05);
-
+                DeadBandOneDimensional(Tar_Data.vx, &(ChassisControl.position.x), 0.05);
+                DeadBandOneDimensional(Tar_Data.vy, &(ChassisControl.position.y), 0.05);
+                DeadBandOneDimensional(Tar_Data.vw, &(ChassisControl.position.w), 0.05);
                 // 释放底盘控制的互斥锁
                 xSemaphoreGiveRecursive(ChassisControl.xMutex_control);
                 break;
@@ -79,11 +78,11 @@ void Chassis_StateMachine_Init()
     ChassisControl.xMutex_control = xSemaphoreCreateRecursiveMutex();
     ChassisState.xMutex_control   = xSemaphoreCreateRecursiveMutex();
     WheelComponent.xMutex_wheel   = xSemaphoreCreateRecursiveMutex();
+    
     // const osMutexAttr_t mutex_attr =
     // {
     //     .name = "Chassis_Mutex"
     // };
-
     // ChassisControl.xMutex_control = osMutexNew(&mutex_attr);
     // ChassisState.xMutex_control = osMutexNew(&mutex_attr);
     // WheelComponent.xMutex_wheel = osMutexNew(&mutex_attr);
