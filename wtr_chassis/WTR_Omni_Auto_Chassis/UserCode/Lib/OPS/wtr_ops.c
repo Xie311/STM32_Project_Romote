@@ -17,27 +17,35 @@ uint8_t OPS_Decode(void)
     } posture;
 
     // 检查起始和结束字符以确保数据完整性
-    if (ops_buffer[0] != 0x0D || ops_buffer[1] != 0x0A || ops_buffer[26] != 0x0A || ops_buffer[27] != 0x0D) {
-        // 如果未找到起始和结束字符，则清空缓冲区并返回错误
-        for (int i = 0; i < 28; i++) {
-            ops_buffer[i] = 0;
+    if (ops_buffer[0] == 0x0D & ops_buffer[1] == 0x0A & ops_buffer[26] == 0x0A & ops_buffer[27] == 0x0D) {
+        // 从缓冲区提取数据并分配到姿态数据缓冲区
+        for (int i = 0; i < 24; i++) {
+            posture.data[i] = ops_buffer[i + 2];
         }
-        return 1; // 返回错误代码
-    }
 
-    // 从缓冲区提取数据并分配到姿态数据缓冲区
-    for (int i = 0; i < 24; i++) {
-        posture.data[i] = ops_buffer[i + 2];
+        // 将解码后的值分配给 OPS_Data 结构体的字段
+        OPS_Data.z_angle = posture.ActVal[0];
+        OPS_Data.x_angle = posture.ActVal[1];
+        OPS_Data.y_angle = posture.ActVal[2];
+        OPS_Data.pos_x   = posture.ActVal[3];
+        OPS_Data.pos_y   = posture.ActVal[4];
+        OPS_Data.w_z     = posture.ActVal[5];
     }
-
-    // 将解码后的值分配给 OPS_Data 结构体的字段
-    OPS_Data.z_angle = posture.ActVal[0];
-    OPS_Data.x_angle = posture.ActVal[1];
-    OPS_Data.y_angle = posture.ActVal[2];
-    OPS_Data.pos_x   = posture.ActVal[3];
-    OPS_Data.pos_y   = posture.ActVal[4];
-    OPS_Data.w_z     = posture.ActVal[5];
 
     return 0; // 返回成功代码
 }
 
+// /**
+//  * @brief: 码盘线程启动
+//  * @return {*}
+//  */
+// void OPS_Decode_TaskStart()
+// {
+//     osThreadAttr_t OPS_Decode_attr =
+//         {
+//             .name       = "OPS_Decode",
+//             .priority   = osPriorityAboveNormal,
+//             .stack_size = 128 * 10,
+//         };
+//     osThreadNew(OPS_Decode, NULL, &OPS_Decode_attr);
+// }

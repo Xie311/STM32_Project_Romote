@@ -11,7 +11,7 @@
 #include "wtr_calculate.h"
 /************************ 用户定义 ***************************/
 #define OPS_UART_HANDLE huart8 // 串口选项
-#define OPS_UART        UART8  // 串口选项
+#define OPS_UART        UART8 // 串口选项
 
 /************************ 结构体定义 ***************************/
 

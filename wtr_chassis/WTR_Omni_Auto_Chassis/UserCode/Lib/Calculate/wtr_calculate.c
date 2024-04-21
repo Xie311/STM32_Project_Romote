@@ -40,7 +40,7 @@ void CalculateOmniWheel(double *moter_speed, double vx, double vy, double vw)
 
 /**
  * @brief :码盘串级PID
- * @author:X311 2024/4/21
+ * @author: X311 2024/4/21
  * @param： ChassisControl 底盘运动状态
  * @param： OPS_Data  码盘反馈数据
  * @note：  通过码盘反馈的当前位置与上位机传来的目标位置PID计算得到vx、vy
@@ -54,8 +54,8 @@ void OPS_Servo(CHASSIS_MOVING_STATE *ChassisControl, OPS_t *OPS_Data)
     OPS_Data->opsPID_x.fdb = OPS_Data->pos_x;
     OPS_Data->opsPID_y.fdb = OPS_Data->pos_y;
 
-    PID_Calc(&(OPS_Data->opsPID_x));
-    PID_Calc(&(OPS_Data->opsPID_y));
+    P_Calc(&(OPS_Data->opsPID_x));
+    P_Calc(&(OPS_Data->opsPID_y));
 
     ChassisControl->velocity.x = OPS_Data->opsPID_x.output;
     ChassisControl->velocity.y = OPS_Data->opsPID_y.output;
@@ -93,6 +93,7 @@ void OPS_Servo(CHASSIS_MOVING_STATE *ChassisControl, OPS_t *OPS_Data)
  * @auther: Chen YiTong 3083697520
  * @param {__IO PID_t} *pid
  * @return {*}
+ * @note 从KI开始调
  */
 
 void PID_Calc(__IO PID_t *pid)
@@ -112,6 +113,7 @@ void PID_Calc(__IO PID_t *pid)
  * @auther: Chen YiTong 3083697520
  * @param {__IO PID_t} *pid
  * @return {*}
+ * @note 从Kp开始调
  */
 void P_Calc(__IO PID_t *pid)
 {
