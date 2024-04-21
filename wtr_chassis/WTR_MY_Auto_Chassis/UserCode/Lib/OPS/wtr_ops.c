@@ -11,6 +11,9 @@ uint8_t ops_buffer[28]; // 接收缓冲区，用于存储接收到的数据，�
  */
 uint8_t OPS_Decode(void)
 {
+    float offset_x = 0;  // 码盘坐标系零点距底盘坐标系零点x方向偏移量
+    float offset_y = 0;  // 码盘坐标系零点距底盘坐标系零点y方向偏移量
+
     static union {
         uint8_t data[24]; // 用于存储解码后的姿态数据的数据缓冲区
         float ActVal[6]; // 用于存储解码后的值的数组
@@ -34,8 +37,8 @@ uint8_t OPS_Decode(void)
     OPS_Data.z_angle = posture.ActVal[0];
     OPS_Data.x_angle = posture.ActVal[1];
     OPS_Data.y_angle = posture.ActVal[2];
-    OPS_Data.pos_x   = posture.ActVal[3];
-    OPS_Data.pos_y   = posture.ActVal[4];
+    OPS_Data.pos_x   = posture.ActVal[3] + offset_x;
+    OPS_Data.pos_y   = posture.ActVal[4] + offset_y;
     OPS_Data.w_z     = posture.ActVal[5];
 
     return 0; // 返回成功代码
