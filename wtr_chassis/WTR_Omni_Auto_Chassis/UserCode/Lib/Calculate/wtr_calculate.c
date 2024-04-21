@@ -37,6 +37,32 @@ void CalculateOmniWheel(double *moter_speed, double vx, double vy, double vw)
     moter_speed[3] = (vx * cos(7*M_PI/4) - vy * sin(7*M_PI/4) - vw * rotate_ratio * wheel_radius) * wheel_rpm_ratio;
 }
 
+
+/**
+ * @brief :码盘串级PID
+ * @author:X311 2024/4/21
+ * @param： ChassisControl 底盘运动状态
+ * @param： OPS_Data  码盘反馈数据
+ * @note：  通过码盘反馈的当前位置与上位机传来的目标位置PID计算得到vx、vy
+ * @note：  将vx、vy存储到ChassisControl中的velocity结构体内
+ */
+void OPS_Servo(CHASSIS_MOVING_STATE *ChassisControl, OPS_t *OPS_Data)
+{
+    OPS_Data->opsPID_x.ref = ChassisControl->position.x;
+    OPS_Data->opsPID_y.ref = ChassisControl->position.y;
+
+    OPS_Data->opsPID_x.fdb = OPS_Data->pos_x;
+    OPS_Data->opsPID_y.fdb = OPS_Data->pos_y;
+
+    PID_Calc(&(OPS_Data->opsPID_x));
+    PID_Calc(&(OPS_Data->opsPID_y));
+
+    ChassisControl->velocity.x = OPS_Data->opsPID_x.output;
+    ChassisControl->velocity.y = OPS_Data->opsPID_y.output;
+    ChassisControl->velocity.w = OPS_Data->w_z;
+}
+
+
 // /**
 //  * @brief: 串级PID控制
 //  * @author：X311 2024/4/13
@@ -133,29 +159,6 @@ void speedServo(float ref, DJI_t *motor)
     PID_Calc(&(motor->speedPID));
 }
 
-/**
- * @brief :码盘串级PID
- * @author:X311 2024/4/21
- * @param： ChassisControl 底盘运动状态
- * @param： OPS_Data  码盘反馈数据
- * @note：  通过码盘反馈的当前位置与上位机传来的目标位置PID计算得到vx、vy
- * @note：  将vx、vy存储到ChassisControl中的velocity结构体内
- */
-void OPS_Servo(CHASSIS_MOVING_STATE *ChassisControl, OPS_t *OPS_Data)
-{
-    OPS_Data->opsPID_x.ref = ChassisControl->position.x;
-    OPS_Data->opsPID_y.ref = ChassisControl->position.y;
-
-    OPS_Data->opsPID_x.fdb = OPS_Data->pos_x;
-    OPS_Data->opsPID_y.fdb = OPS_Data->pos_y;
-
-    PID_Calc(&(OPS_Data->opsPID_x));
-    PID_Calc(&(OPS_Data->opsPID_y));
-
-    ChassisControl->velocity.x = OPS_Data->opsPID_x.output;
-    ChassisControl->velocity.y = OPS_Data->opsPID_y.output;
-    ChassisControl->velocity.w = OPS_Data->w_z;
-}
 
 /**
  * @brief: 圆周死区控制
