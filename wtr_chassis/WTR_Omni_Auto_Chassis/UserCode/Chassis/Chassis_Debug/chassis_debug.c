@@ -1,5 +1,8 @@
 #include "chassis_debug.h"
 
+/************************一次只能启动一个调试线程！！！否则printf左吐一点右吐一点****************************************/
+
+/************************ 码盘传数据 调试代码 ***************************/
 osThreadId_t ops_debug_TaskHandle;
 const osThreadAttr_t ops_debug_Task_attributes = {
     .name       = "ops_debug_Task",
