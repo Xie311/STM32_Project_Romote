@@ -14,6 +14,9 @@
 Tar_t Tar_Data = {0};
 uint8_t tar_buffer[30];
 
+// 串口中断使能
+//__HAL_UART_ENABLE_IT(&huart8, UART_IT_RXNE);
+
 /**
  * @brief 对上位机传来数据进行解码
  * 

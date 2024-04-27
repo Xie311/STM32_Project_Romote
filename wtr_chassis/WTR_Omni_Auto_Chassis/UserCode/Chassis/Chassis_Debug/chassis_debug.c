@@ -23,8 +23,9 @@ void OPS_Debug_TaskStart(void)
 void OPS_Debug_Task(void *argument)
 {
     for (;;) {
-        printf("%d\r\n", (int)(OPS_Data.pos_x));
-        osDelay(1000);
+        printf("%d,%f,%f\r\n", (int)(OPS_Data.pos_x), hDJI[0].speedPID.fdb, hDJI[0].speedPID.ref);
+
+        osDelay(50);
     }
 }
 

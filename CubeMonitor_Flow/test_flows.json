@@ -1,0 +1,588 @@
+[
+    {
+        "id": "7b9ed63e.2138f8",
+        "type": "tab",
+        "label": "Basic_Flow",
+        "disabled": false,
+        "info": "# Basic flow to start with STM32CubeMonitor."
+    },
+    {
+        "id": "1ebbb430.dac7dc",
+        "type": "ui_chartst",
+        "z": "7b9ed63e.2138f8",
+        "group": "f9c34dde.1e2f4",
+        "name": "myChart",
+        "order": 4,
+        "width": 15,
+        "height": 9,
+        "chartType": "line",
+        "curveType": "linear",
+        "duration": "10",
+        "ymin": "",
+        "ymax": "",
+        "x": 560,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "6013fb0b.5b7504",
+        "type": "acquisition out",
+        "z": "7b9ed63e.2138f8",
+        "name": "myProbe_Out",
+        "probeconfig": "2f448a19f791fc33",
+        "x": 540,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "d59587ff.cd1748",
+        "type": "variables",
+        "z": "7b9ed63e.2138f8",
+        "groupname": "test",
+        "accesspoint": 0,
+        "execonfig": "6d60bae77a38f250",
+        "variablelist": [],
+        "triggerstartmode": "manual",
+        "triggername": "current_var",
+        "triggerthreshold": "30000",
+        "frequency": "",
+        "frequencyType": "0",
+        "snapshotheader": "",
+        "mode": "direct",
+        "lastImportedTime": 1714218819292,
+        "openStatus": true,
+        "x": 310,
+        "y": 120,
+        "wires": [
+            [
+                "6013fb0b.5b7504",
+                "1bdf4a29a1e9e313"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "fc00295e.79ada8",
+        "type": "ui_button",
+        "z": "7b9ed63e.2138f8",
+        "name": "",
+        "group": "f9c34dde.1e2f4",
+        "order": 3,
+        "width": 5,
+        "height": 1,
+        "passthru": false,
+        "label": "Clear Graphs",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "icon": "",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "clear",
+        "x": 410,
+        "y": 520,
+        "wires": [
+            [
+                "1ebbb430.dac7dc"
+            ]
+        ]
+    },
+    {
+        "id": "5fd51c96.2330e4",
+        "type": "ui_button",
+        "z": "7b9ed63e.2138f8",
+        "name": "",
+        "group": "f9c34dde.1e2f4",
+        "order": 1,
+        "width": 5,
+        "height": 1,
+        "passthru": false,
+        "label": "START Acquisition",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "icon": "",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "start",
+        "x": 110,
+        "y": 80,
+        "wires": [
+            [
+                "d59587ff.cd1748",
+                "a264418b39b61a76"
+            ]
+        ]
+    },
+    {
+        "id": "52eadfe3.2c8cc",
+        "type": "ui_button",
+        "z": "7b9ed63e.2138f8",
+        "name": "",
+        "group": "f9c34dde.1e2f4",
+        "order": 2,
+        "width": 5,
+        "height": 1,
+        "passthru": true,
+        "label": "STOP Acquisition",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "stop",
+        "topicType": "str",
+        "x": 110,
+        "y": 160,
+        "wires": [
+            [
+                "d59587ff.cd1748"
+            ]
+        ]
+    },
+    {
+        "id": "a7c3e070.5a6c",
+        "type": "processing",
+        "z": "7b9ed63e.2138f8",
+        "groupname": "test",
+        "groupid": "d59587ff.cd1748",
+        "expressions": [],
+        "statistics": [],
+        "logmode": "no",
+        "logformat": "stcm",
+        "x": 350,
+        "y": 420,
+        "wires": [
+            [
+                "1ebbb430.dac7dc"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "4a573fb0.4bc99",
+        "type": "acquisition in",
+        "z": "7b9ed63e.2138f8",
+        "name": "myProbe_In",
+        "probeconfig": "2f448a19f791fc33",
+        "x": 110,
+        "y": 420,
+        "wires": [
+            [
+                "a7c3e070.5a6c"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "f9314347d7d5dd66",
+        "type": "ui_write",
+        "z": "7b9ed63e.2138f8",
+        "group": "f9c34dde.1e2f4",
+        "name": "",
+        "order": 4,
+        "width": 0,
+        "height": 0,
+        "x": 550,
+        "y": 280,
+        "wires": [
+            [
+                "6013fb0b.5b7504"
+            ]
+        ]
+    },
+    {
+        "id": "67712cd38dc6cac2",
+        "type": "variables",
+        "z": "7b9ed63e.2138f8",
+        "groupname": "var_max;min",
+        "accesspoint": 0,
+        "execonfig": "b58956f9b65cfecb",
+        "variablelist": [],
+        "triggerstartmode": "manual",
+        "triggername": "var_max",
+        "triggerthreshold": "",
+        "frequency": "",
+        "frequencyType": "0",
+        "snapshotheader": "",
+        "mode": "direct",
+        "lastImportedTime": 1714218833447,
+        "openStatus": false,
+        "x": 330,
+        "y": 280,
+        "wires": [
+            [
+                "f9314347d7d5dd66"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "e8c95e597f33436b",
+        "type": "inject",
+        "z": "7b9ed63e.2138f8",
+        "name": "timestamp",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 130,
+        "y": 280,
+        "wires": [
+            [
+                "67712cd38dc6cac2"
+            ]
+        ]
+    },
+    {
+        "id": "a264418b39b61a76",
+        "type": "debug",
+        "z": "7b9ed63e.2138f8",
+        "name": "debug 1",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 300,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "1bdf4a29a1e9e313",
+        "type": "debug",
+        "z": "7b9ed63e.2138f8",
+        "name": "debug 2",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 520,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "f9c34dde.1e2f4",
+        "type": "ui_group",
+        "name": "Chart",
+        "tab": "17d09b07.741a55",
+        "order": 1,
+        "disp": true,
+        "width": 15,
+        "collapse": false
+    },
+    {
+        "id": "2f448a19f791fc33",
+        "type": "probe",
+        "probeid": "55FF6F067571525305330581",
+        "probename": "ST-Link v2 55FF6F067571525305330581",
+        "protocol": "SWD",
+        "frequency": "1.8 MHz - Default",
+        "probeproperty": "{\"SWD\":[\"4.6 MHz\",\"1.8 MHz - Default\",\"950 kHz\",\"400 kHz\",\"150 kHz\"],\"JTAG\":[\"18 MHz\",\"9 MHz\",\"4.5 MHz\",\"2.25 MHz\",\"1.12 MHz - Default\",\"560 kHz\",\"280 kHz\",\"140 kHz\"]}",
+        "probeversion": "ST Link firmware version V2.J37",
+        "connectionType": "p2p",
+        "nickname": "My_ST-Link"
+    },
+    {
+        "id": "6d60bae77a38f250",
+        "type": "exe-config",
+        "name": "test",
+        "exefile": "D:\\STM32_WorkPlace\\EIDE_test\\build\\Debug\\EIDE_test.elf",
+        "exefolder": "D:\\STM32_WorkPlace\\EIDE_test\\build\\Debug\\",
+        "exevariablelist": [
+            {
+                "address": "0x08001358",
+                "name": "AHBPrescTable[0]",
+                "type": 1
+            },
+            {
+                "address": "0x20000054",
+                "name": "current_var",
+                "type": 6,
+                "checked": true
+            },
+            {
+                "address": "0x20000050",
+                "name": "hcan1.ErrorCode",
+                "type": 5
+            },
+            {
+                "address": "0x20000045",
+                "name": "hcan1.Init.AutoBusOff",
+                "type": 2
+            },
+            {
+                "address": "0x20000047",
+                "name": "hcan1.Init.AutoRetransmission",
+                "type": 2
+            },
+            {
+                "address": "0x20000046",
+                "name": "hcan1.Init.AutoWakeUp",
+                "type": 2
+            },
+            {
+                "address": "0x20000034",
+                "name": "hcan1.Init.Mode",
+                "type": 5
+            },
+            {
+                "address": "0x20000030",
+                "name": "hcan1.Init.Prescaler",
+                "type": 5
+            },
+            {
+                "address": "0x20000048",
+                "name": "hcan1.Init.ReceiveFifoLocked",
+                "type": 2
+            },
+            {
+                "address": "0x20000038",
+                "name": "hcan1.Init.SyncJumpWidth",
+                "type": 5
+            },
+            {
+                "address": "0x2000003c",
+                "name": "hcan1.Init.TimeSeg1",
+                "type": 5
+            },
+            {
+                "address": "0x20000040",
+                "name": "hcan1.Init.TimeSeg2",
+                "type": 5
+            },
+            {
+                "address": "0x20000044",
+                "name": "hcan1.Init.TimeTriggeredMode",
+                "type": 2
+            },
+            {
+                "address": "0x20000049",
+                "name": "hcan1.Init.TransmitFifoPriority",
+                "type": 2
+            },
+            {
+                "address": "0x2000002c",
+                "name": "hcan1.Instance",
+                "type": 5
+            },
+            {
+                "address": "0x2000004c",
+                "name": "hcan1.State",
+                "type": 2
+            },
+            {
+                "address": "0x20000000",
+                "name": "step",
+                "type": 6,
+                "checked": true
+            },
+            {
+                "address": "0x20000004",
+                "name": "SystemCoreClock",
+                "type": 5
+            },
+            {
+                "address": "0x20000058",
+                "name": "trend",
+                "type": 6,
+                "checked": true
+            },
+            {
+                "address": "0x20000064",
+                "name": "uwTick",
+                "type": 5
+            },
+            {
+                "address": "0x20000008",
+                "name": "uwTickFreq",
+                "type": 2
+            },
+            {
+                "address": "0x2000000c",
+                "name": "uwTickPrio",
+                "type": 5
+            },
+            {
+                "address": "0x2000005c",
+                "name": "var_max",
+                "type": 6,
+                "checked": true
+            },
+            {
+                "address": "0x20000060",
+                "name": "var_min",
+                "type": 6,
+                "checked": true
+            }
+        ],
+        "expand": false,
+        "filename": "EIDE_test.elf",
+        "exeModifiedTime": 1714218807021,
+        "configLastUpdate": 1714218818944
+    },
+    {
+        "id": "b58956f9b65cfecb",
+        "type": "exe-config",
+        "name": "var_max",
+        "exefile": "D:\\STM32_WorkPlace\\EIDE_test\\build\\Debug\\EIDE_test.elf",
+        "exefolder": "D:\\STM32_WorkPlace\\EIDE_test\\build\\Debug\\",
+        "exevariablelist": [
+            {
+                "address": "0x08001358",
+                "name": "AHBPrescTable[0]",
+                "type": 1
+            },
+            {
+                "address": "0x20000054",
+                "name": "current_var",
+                "type": 6
+            },
+            {
+                "address": "0x20000050",
+                "name": "hcan1.ErrorCode",
+                "type": 5
+            },
+            {
+                "address": "0x20000045",
+                "name": "hcan1.Init.AutoBusOff",
+                "type": 2
+            },
+            {
+                "address": "0x20000047",
+                "name": "hcan1.Init.AutoRetransmission",
+                "type": 2
+            },
+            {
+                "address": "0x20000046",
+                "name": "hcan1.Init.AutoWakeUp",
+                "type": 2
+            },
+            {
+                "address": "0x20000034",
+                "name": "hcan1.Init.Mode",
+                "type": 5
+            },
+            {
+                "address": "0x20000030",
+                "name": "hcan1.Init.Prescaler",
+                "type": 5
+            },
+            {
+                "address": "0x20000048",
+                "name": "hcan1.Init.ReceiveFifoLocked",
+                "type": 2
+            },
+            {
+                "address": "0x20000038",
+                "name": "hcan1.Init.SyncJumpWidth",
+                "type": 5
+            },
+            {
+                "address": "0x2000003c",
+                "name": "hcan1.Init.TimeSeg1",
+                "type": 5
+            },
+            {
+                "address": "0x20000040",
+                "name": "hcan1.Init.TimeSeg2",
+                "type": 5
+            },
+            {
+                "address": "0x20000044",
+                "name": "hcan1.Init.TimeTriggeredMode",
+                "type": 2
+            },
+            {
+                "address": "0x20000049",
+                "name": "hcan1.Init.TransmitFifoPriority",
+                "type": 2
+            },
+            {
+                "address": "0x2000002c",
+                "name": "hcan1.Instance",
+                "type": 5
+            },
+            {
+                "address": "0x2000004c",
+                "name": "hcan1.State",
+                "type": 2
+            },
+            {
+                "address": "0x20000000",
+                "name": "step",
+                "type": 6
+            },
+            {
+                "address": "0x20000004",
+                "name": "SystemCoreClock",
+                "type": 5
+            },
+            {
+                "address": "0x20000058",
+                "name": "trend",
+                "type": 6
+            },
+            {
+                "address": "0x20000064",
+                "name": "uwTick",
+                "type": 5
+            },
+            {
+                "address": "0x20000008",
+                "name": "uwTickFreq",
+                "type": 2
+            },
+            {
+                "address": "0x2000000c",
+                "name": "uwTickPrio",
+                "type": 5
+            },
+            {
+                "address": "0x2000005c",
+                "name": "var_max",
+                "type": 6,
+                "checked": true
+            },
+            {
+                "address": "0x20000060",
+                "name": "var_min",
+                "type": 6,
+                "checked": true
+            }
+        ],
+        "expand": false,
+        "filename": "EIDE_test.elf",
+        "exeModifiedTime": 1714218807021,
+        "configLastUpdate": 1714218833126
+    },
+    {
+        "id": "17d09b07.741a55",
+        "type": "ui_tab",
+        "name": "Home",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    }
+]

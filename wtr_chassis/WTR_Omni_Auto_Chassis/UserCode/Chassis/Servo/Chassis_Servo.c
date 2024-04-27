@@ -34,6 +34,10 @@ void Chassis_Servo_Task(void const *argument)
         // 复制底盘控制数据（目标位置 来自上位机 [StateMachine.c]）到临时变量
         CHASSIS_MOVING_STATE ChassisControl_tmp = ChassisControl;
         xSemaphoreGiveRecursive(ChassisControl.xMutex_control);
+        /*******************************测试数据***********************************************************/
+        // OPS_Data.pos_x = 100;
+        // OPS_Data.pos_y = 100;
+        // OPS_Data.w_z   = 10;
 
         // 通过码盘反馈的当前位置与上位机传来的期望位置PID计算得到期望vx、vy，储存到ChassisControl_tmp中
         OPS_Servo(&(ChassisControl_tmp), &(OPS_Data));
@@ -107,8 +111,8 @@ void Chassis_Servo_DjiMotorInit()
     DJI_Init();
     for (uint16_t i = 0; i < 4; i++)
     {
-        hDJI[i].speedPID.KP        = 6;//5
-        hDJI[i].speedPID.KI        = 0.05;//0.2
+        hDJI[i].speedPID.KP        = 4.5;//5
+        hDJI[i].speedPID.KI        = 0.2;//0.2
         hDJI[i].speedPID.KD        = 0.8;//0.8
         hDJI[i].speedPID.outputMax = 8000;
 

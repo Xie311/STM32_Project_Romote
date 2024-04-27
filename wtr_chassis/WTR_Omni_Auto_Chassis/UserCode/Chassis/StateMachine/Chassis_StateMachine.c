@@ -23,8 +23,8 @@ void Chassis_StateMachine_Task(void const *argument)
         vPortEnterCritical(); // 进入临界区，防止多个任务同时访问 RemoteCtl_RawData
         Tar_t Tar_Data_tmp = Tar_Data;
         //测试代码
-        Tar_Data_tmp.pos_x = 120;
-        Tar_Data_tmp.pos_y = 120;
+        Tar_Data_tmp.pos_x = 500;
+        Tar_Data_tmp.pos_y = 500;
         Tar_Data.state     = 3;
         vPortExitCritical(); // 退出临界区
         switch (Tar_Data_tmp.state) {

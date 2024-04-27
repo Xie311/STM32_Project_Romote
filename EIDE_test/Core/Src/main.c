@@ -55,7 +55,10 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+/******全局变量定义*******/
+int step        = 1;
+int current_var, var_max, var_min;
+int trend       = 0; // 0:increase;1:decrease
 /* USER CODE END 0 */
 
 /**
@@ -88,6 +91,9 @@ int main(void)
   MX_GPIO_Init();
   MX_CAN1_Init();
   /* USER CODE BEGIN 2 */
+  current_var = 0;
+  var_max     = 40;
+  var_min     = 0;
 
   /* USER CODE END 2 */
 
@@ -98,6 +104,19 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+    if(current_var>=var_max)
+    {
+        trend = 1;
+    }
+    else {
+        trend = 0;
+    }
+
+    if(trend==1)
+        current_var++;
+    else
+        current_var--;
+    HAL_Delay(100);
   }
   /* USER CODE END 3 */
 }
