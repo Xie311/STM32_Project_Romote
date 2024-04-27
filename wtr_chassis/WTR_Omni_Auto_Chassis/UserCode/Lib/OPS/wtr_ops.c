@@ -17,7 +17,7 @@ uint8_t OPS_Decode(void)
     } posture;
 
     // 检查起始和结束字符以确保数据完整性
-    if (ops_buffer[0] == 0x0D & ops_buffer[1] == 0x0A & ops_buffer[26] == 0x0A & ops_buffer[27] == 0x0D) {
+    if ((ops_buffer[0] == 0x0D) && (ops_buffer[1] == 0x0A) && (ops_buffer[26] == 0x0A) && (ops_buffer[27] == 0x0D)) {
         // 从缓冲区提取数据并分配到姿态数据缓冲区
         for (int i = 0; i < 24; i++) {
             posture.data[i] = ops_buffer[i + 2];

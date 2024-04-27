@@ -105,6 +105,16 @@ void Chassis_Servo_DjiMotorInit()
     hDJI[2].motorType      = M2006;
     hDJI[3].motorType      = M2006;
     DJI_Init();
+    for (uint16_t i = 0; i < 4; i++)
+    {
+        hDJI[i].speedPID.KP        = 6;//5
+        hDJI[i].speedPID.KI        = 0.05;//0.2
+        hDJI[i].speedPID.KD        = 0.8;//0.8
+        hDJI[i].speedPID.outputMax = 8000;
+
+    }
+    
+
 }
 
 /**
