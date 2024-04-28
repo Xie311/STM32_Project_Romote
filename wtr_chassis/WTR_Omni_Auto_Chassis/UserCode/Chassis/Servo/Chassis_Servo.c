@@ -34,10 +34,6 @@ void Chassis_Servo_Task(void const *argument)
         // 复制底盘控制数据（目标位置 来自上位机 [StateMachine.c]）到临时变量
         CHASSIS_MOVING_STATE ChassisControl_tmp = ChassisControl;
         xSemaphoreGiveRecursive(ChassisControl.xMutex_control);
-        /*******************************测试数据***********************************************************/
-        // OPS_Data.pos_x = 100;
-        // OPS_Data.pos_y = 100;
-        // OPS_Data.w_z   = 10;
 
         // 通过码盘反馈的当前位置与上位机传来的期望位置PID计算得到期望vx、vy，储存到ChassisControl_tmp中
         OPS_Servo(&(ChassisControl_tmp), &(OPS_Data));
