@@ -54,8 +54,6 @@ void Chassis_Servo_Task(void const *argument)
 
         // 遍历四个电机，根据计算得到的速度调整电机状态
         for (int i = 0; i < 4; i++) { speedServo(motor_velocity[i], &(hDJI_tmp[i])); }
-        // for (int i = 0; i < 4; i++) { positionServo(360, &(hDJI_tmp[i])); }
-        // for (int i = 0; i < 4; i++) { CasServo(&(Tar_Data), &(hDJI_tmp[i]),&(OPS_Data)); }
 
         // 将调整后的电机状态通过CAN总线发送
         CanTransmit_DJI_1234(&hcan_Dji,

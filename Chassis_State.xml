@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<mavlink>
+  <version>3</version>
+  <messages>
+    <message id="1" name="CHASSIS">
+      <description>Test all field types</description>
+      <field type="float" name="pos_x">x Position</field>
+      <field type="float" name="pos_y">x Position</field>
+      <field type="float" name="theta">Heading angle</field>
+      <field type="double" name="vx">x speed</field>
+      <field type="double" name="vy">y speed</field>
+      <field type="double" name="vz">z speed</field>
+      <field type="int" name="state">state machine</field>
+    </message>
+  </messages>
+</mavlink>
