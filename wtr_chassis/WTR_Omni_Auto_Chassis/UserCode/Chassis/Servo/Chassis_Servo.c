@@ -67,7 +67,7 @@ void Chassis_Servo_Task(void const *argument)
         for (int i = 0; i < 4; i++) { memcpy(WheelComponent.hDJI[i], &(hDJI_tmp[i]), sizeof(DJI_t)); }
         vPortExitCritical();
 
-        osDelay(10);
+        osDelay(3);
     }
 }
 

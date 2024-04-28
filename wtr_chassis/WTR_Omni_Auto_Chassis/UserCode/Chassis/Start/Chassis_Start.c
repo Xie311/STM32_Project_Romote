@@ -19,7 +19,6 @@ void StartDefaultTask(void const *argument)
     //================初始化====================
     Chassis_StateMachine_Init(); // 状态机初始化
     Chassis_Servo_Init();        // 底盘电机初始化
-    osDelay(4000);               // 等待外设初始化结束
     Chassis_Perception_Init();   // 码盘初始化
 
     //================启动线程==================

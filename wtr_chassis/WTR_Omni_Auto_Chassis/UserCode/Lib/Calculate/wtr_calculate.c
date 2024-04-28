@@ -1,7 +1,7 @@
 /*
  * @Author: szf
  * @Date: 2023-02-22 12:04:21
- * @LastEditTime: 2024-04-28 18:07:48
+ * @LastEditTime: 2024-04-28 20:53:20
  * @LastEditors: x311 
  * @brief 运动学逆解算及PID计算函数
  * @FilePath: \WTR_Omni_Auto_Chassis\UserCode\Lib\Calculate\wtr_calculate.c
@@ -56,10 +56,11 @@ void CalculateOmniWheel(double *moter_speed, double vx, double vy, double vw)
     v2 = (float)((vx * cos(3*M_PI / 4) - vy * sin(3*M_PI / 4) - vw * rotate_ratio) / wheel_radius);
     v3 = (float)((vx * cos(5*M_PI / 4) - vy * sin(5*M_PI / 4) - vw * rotate_ratio) / wheel_radius);
     v4 = (float)((vx * cos(7*M_PI / 4) - vy * sin(7*M_PI / 4) - vw * rotate_ratio) / wheel_radius);
-    moter_speed[0] = (float)((v1 * 60 * wheel_rpm_ratio) / (2 * M_PI));
-    moter_speed[1] = (float)((v2 * 60 * wheel_rpm_ratio) / (2 * M_PI));
-    moter_speed[2] = (float)((v3 * 60 * wheel_rpm_ratio) / (2 * M_PI));
-    moter_speed[3] = (float)((v4 * 60 * wheel_rpm_ratio) / (2 * M_PI));
+    
+    moter_speed[0] = (float)((v1  * wheel_rpm_ratio) / (2 * M_PI));
+    moter_speed[1] = (float)((v2  * wheel_rpm_ratio) / (2 * M_PI));
+    moter_speed[2] = (float)((v3  * wheel_rpm_ratio) / (2 * M_PI));
+    moter_speed[3] = (float)((v4  * wheel_rpm_ratio) / (2 * M_PI));
 }
 
 

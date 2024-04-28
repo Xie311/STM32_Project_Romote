@@ -18,9 +18,6 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
     if (huart->Instance == OPS_UART) 
     {
-        // OPS_Decode();
-        // HAL_UART_Receive_IT(&huart8, ops_buffer, sizeof(ops_buffer));
-
         // 检查起始和结束字符以确保数据完整性
         if ((ops_buffer[0] == 0x0D) && (ops_buffer[1] == 0x0A) && (ops_buffer[26] == 0x0A) && (ops_buffer[27] == 0x0D))
         {
