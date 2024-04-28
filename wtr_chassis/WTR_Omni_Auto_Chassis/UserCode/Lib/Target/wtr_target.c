@@ -3,25 +3,36 @@
  * @author X311
  * @brief 接受上位机数据
  * @version 0.0
- * @date 2024-04-16
+ * @date 2024-04-28
  * 
  * @copyright Copyright (c) 2024
  * 
  */
 #include "wtr_target.h"
 #include <stdio.h>
+mavlink_chassis_t Tar_Data;
 
-Tar_t Tar_Data = {0};
-uint8_t tar_buffer[30];
-
-// 串口中断使能
-//__HAL_UART_ENABLE_IT(&huart8, UART_IT_RXNE);
+void Chassis_Target_Init()
+{
+    // 绑定通道和串口
+    wtrMavlink_BindChannel(&huart6, MAVLINK_COMM_0);
+    // 启动通道0对应串口的中断接收
+    wtrMavlink_StartReceiveIT(MAVLINK_COMM_0);
+}
 
 /**
- * @brief 对上位机传来数据进行解码
- * 
+ * @brief 接收到完整消息且校验通过后会调用这个函数。在这个函数里调用解码函数就可以向结构体写入收到的消息
+ * @param msg 接收到的消息
+ * @return
  */
-uint8_t Tar_Decode(void){
-    //To be continued
-    return 0;
+void wtrMavlink_MsgRxCpltCallback(mavlink_message_t *msg)
+{
+    switch (msg->msgid) {
+        case MAVLINK_MSG_ID_CHASSIS:
+            // 将接收到的消息解码
+            mavlink_msg_chassis_decode(msg, &Tar_Data);
+            break;
+        default:
+            break;
+    }
 }
