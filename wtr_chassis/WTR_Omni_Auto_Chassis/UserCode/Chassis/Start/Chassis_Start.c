@@ -19,8 +19,8 @@ void StartDefaultTask(void const *argument)
     //================初始化====================
     Chassis_StateMachine_Init(); // 状态机初始化
     Chassis_Servo_Init();        // 底盘电机初始化
-    Chassis_Target_Init();
-    Chassis_Perception_Init(); // 码盘初始化
+    Chassis_Target_Init();       // 上位机数据接收初始化
+    Chassis_Perception_Init();   // 码盘初始化
 
     //================启动线程==================
     //OPS_Decode_TaskStart();
