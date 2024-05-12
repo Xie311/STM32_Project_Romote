@@ -2,7 +2,7 @@
  * @Author: Chen Yitong 3083697520@qq.com
  * @Date: 2023-09-23 11:33:41
  * @LastEditors: x311 
- * @LastEditTime: 2024-05-01 15:47:02
+ * @LastEditTime: 2024-05-01 15:51:30
  * @FilePath: \WTR_Omni_Auto_Chassis\UserCode\Chassis\StateMachine\Chassis_StateMachine.c
  * @brief 底盘状态机
  *
@@ -24,7 +24,7 @@ void Chassis_StateMachine_Task(void const *argument)
         mavlink_chassis_t Tar_Data_tmp = Tar_Data;
         //测试代码
         Tar_Data_tmp.pos_x = 0;
-        Tar_Data_tmp.pos_y = 200;
+        Tar_Data_tmp.pos_y = 20;
         Tar_Data.state     = 3;
         vPortExitCritical(); // 退出临界区
         switch (Tar_Data_tmp.state) {

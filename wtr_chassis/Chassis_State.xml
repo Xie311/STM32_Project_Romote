@@ -6,11 +6,10 @@
       <description>Test all field types</description>
       <field type="float" name="pos_x">x Position</field>
       <field type="float" name="pos_y">x Position</field>
+      <field type="double" name="radius">radius of weight</field>
       <field type="float" name="theta">Heading angle</field>
-      <field type="double" name="vx">x speed</field>
-      <field type="double" name="vy">y speed</field>
-      <field type="double" name="wz">z speed</field>
       <field type="uint8_t" name="state">state machine</field>
+      <field type="uint8_t" name="flag">left or right</field>
     </message>
   </messages>
 </mavlink>

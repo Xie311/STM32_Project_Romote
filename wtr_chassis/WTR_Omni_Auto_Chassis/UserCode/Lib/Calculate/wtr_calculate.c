@@ -1,7 +1,7 @@
 /*
  * @Author: szf
  * @Date: 2023-02-22 12:04:21
- * @LastEditTime: 2024-04-29 23:20:01
+ * @LastEditTime: 2024-05-10 13:23:14
  * @LastEditors: x311 
  * @brief 运动学逆解算及PID计算函数
  * @FilePath: \WTR_Omni_Auto_Chassis\UserCode\Lib\Calculate\wtr_calculate.c
@@ -33,41 +33,41 @@ double moter_speed[4];
  }
 
 
-// /*****************全向轮底盘*****************************************/
-// // 全向轮底盘参数
-// #define wheel_radius  1.0       //全向轮半径
-// #define rotate_ratio    0.3615   // 正方形边长 ， 也即 (Width + Length)/2 
-// #define wheel_rpm_ratio 2387.324 // 减速比，换算线速度到rpm
+/*****************全向轮底盘*****************************************/
+// 全向轮底盘参数
+#define wheel_radius  1.0       //全向轮半径
+#define rotate_ratio    0.3615   // 正方形边长 ， 也即 (Width + Length)/2 
+#define wheel_rpm_ratio 2387.324 // 减速比，换算线速度到rpm
 
 
-// /**
-//  * @brief 全向轮底盘逆解算
-//  * @param moter_speed 每个电机的速度数组
-//  * @param vx x轴速度（前向）
-//  * @param vy y轴速度（横向）
-//  * @param vw 旋转角速度（弧度）
-//  * @return void
-//  */
-// void CalculateOmniWheel(double *moter_speed, double vx, double vy, double vw)
-// {
-//     // 计算每个轮子的速度
-//     moter_speed[0]   = (float)((vx * cos(M_PI / 4) - vy * sin(M_PI / 4) - vw * rotate_ratio) / wheel_radius);
-//     moter_speed[1] = (float)((vx * cos(3 * M_PI / 4) - vy * sin(3 * M_PI / 4) - vw * rotate_ratio) / wheel_radius);
-//     moter_speed[2]   = (float)((vx * cos(5 * M_PI / 4) - vy * sin(5 * M_PI / 4) - vw * rotate_ratio) / wheel_radius);
-//     moter_speed[3] = (float)((vx * cos(7 * M_PI / 4) - vy * sin(7 * M_PI / 4) - vw * rotate_ratio) / wheel_radius);
+/**
+ * @brief 全向轮底盘逆解算
+ * @param moter_speed 每个电机的速度数组
+ * @param vx x轴速度（前向）
+ * @param vy y轴速度（横向）
+ * @param vw 旋转角速度（弧度）
+ * @return void
+ */
+void CalculateOmniWheel(double *moter_speed, double vx, double vy, double vw)
+{
+    // 计算每个轮子的速度
+    moter_speed[0]   = (float)((vx * cos(M_PI / 4) - vy * sin(M_PI / 4) - vw * rotate_ratio) / wheel_radius);
+    moter_speed[1] = (float)((vx * cos(3 * M_PI / 4) - vy * sin(3 * M_PI / 4) - vw * rotate_ratio) / wheel_radius);
+    moter_speed[2]   = (float)((vx * cos(5 * M_PI / 4) - vy * sin(5 * M_PI / 4) - vw * rotate_ratio) / wheel_radius);
+    moter_speed[3] = (float)((vx * cos(7 * M_PI / 4) - vy * sin(7 * M_PI / 4) - vw * rotate_ratio) / wheel_radius);
     
-//     // 计算每个轮子的速度
-//     // float v1, v2, v3, v4;
-//     // v1 = (float)((vx * cos(M_PI / 4) - vy * sin(M_PI / 4) - vw * rotate_ratio)/wheel_radius);
-//     // v2 = (float)((vx * cos(3*M_PI / 4) - vy * sin(3*M_PI / 4) - vw * rotate_ratio) / wheel_radius);
-//     // v3 = (float)((vx * cos(5*M_PI / 4) - vy * sin(5*M_PI / 4) - vw * rotate_ratio) / wheel_radius);
-//     // v4 = (float)((vx * cos(7*M_PI / 4) - vy * sin(7*M_PI / 4) - vw * rotate_ratio) / wheel_radius);
+    // 计算每个轮子的速度
+    // float v1, v2, v3, v4;
+    // v1 = (float)((vx * cos(M_PI / 4) - vy * sin(M_PI / 4) - vw * rotate_ratio)/wheel_radius);
+    // v2 = (float)((vx * cos(3*M_PI / 4) - vy * sin(3*M_PI / 4) - vw * rotate_ratio) / wheel_radius);
+    // v3 = (float)((vx * cos(5*M_PI / 4) - vy * sin(5*M_PI / 4) - vw * rotate_ratio) / wheel_radius);
+    // v4 = (float)((vx * cos(7*M_PI / 4) - vy * sin(7*M_PI / 4) - vw * rotate_ratio) / wheel_radius);
     
-//     // moter_speed[0] = (float)((v1  * wheel_rpm_ratio) * 60 / (2 * M_PI)); //之前正常运行的代码不乘这个60捏
-//     // moter_speed[1] = (float)((v2  * wheel_rpm_ratio) * 60 / (2 * M_PI));
-//     // moter_speed[2] = (float)((v3  * wheel_rpm_ratio) * 60 / (2 * M_PI));
-//     // moter_speed[3] = (float)((v4  * wheel_rpm_ratio) * 60 / (2 * M_PI));
-// }
+    // moter_speed[0] = (float)((v1  * wheel_rpm_ratio) * 60 / (2 * M_PI)); 
+    // moter_speed[1] = (float)((v2  * wheel_rpm_ratio) * 60 / (2 * M_PI));
+    // moter_speed[2] = (float)((v3  * wheel_rpm_ratio) * 60 / (2 * M_PI));
+    // moter_speed[3] = (float)((v4  * wheel_rpm_ratio) * 60 / (2 * M_PI));
+}
 
 
 /**
